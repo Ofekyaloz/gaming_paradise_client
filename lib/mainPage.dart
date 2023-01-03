@@ -19,11 +19,10 @@ class _mainPageState extends State<mainPage> {
   }
 
   static final List<Widget> _pages = <Widget>[
-    SignupPage(),
-
     PostsOverviewScreen(),
 
     GamesOverviewScreen(), // CallsPage() example
+    SignupPage(),
   ];
 
   @override

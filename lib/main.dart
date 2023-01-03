@@ -339,8 +339,8 @@ class _MyAppState extends State<MyApp> {
                               MaterialPageRoute(
                                 // builder: (context) => SignupPage()),
                                   builder: (context) =>
-                                      mainPage()),
-                                //       postPage(post)), // get post id
+                                //       mainPage()),
+                                      postPage(post)), // get post id
                             );
                           },
                         )
