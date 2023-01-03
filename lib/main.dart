@@ -107,6 +107,12 @@ class _MyAppState extends State<MyApp> {
     if (response.statusCode == 200) {
       if (!mounted) return;
       Constants.username = usernameController.text;
+      usernameController.clear();
+      passwordController.clear();
+      setState(() {
+        _pass = '';
+        _name = '';
+      });
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -302,9 +308,9 @@ class _MyAppState extends State<MyApp> {
                                       NewPost("ofek", "The Sims 3")),
                             );
                           },
-                          child: const Text(
-                            'Forgot Password',
-                          ),
+                          child:
+                          // const Text('Forgot Password'),
+                          const Text('new post'),
                         ),
                       ],
                     ),
@@ -331,9 +337,9 @@ class _MyAppState extends State<MyApp> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                // builder: (context) => SignupPage()),
-                                  builder: (context) =>
-                                      mainPage()),
+                                builder: (context) => SignupPage()),
+                                //   builder: (context) =>
+                                //       mainPage()),
                                       // postPage(post, false)), // get post id
                             );
                           },

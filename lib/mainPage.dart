@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'signup.dart';
 import 'gameOverviewScreen.dart';
 
 class mainPage extends StatefulWidget {
@@ -8,7 +9,7 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
-  int _selectedIndex = 0; //New
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -18,10 +19,7 @@ class _mainPageState extends State<mainPage> {
 
   static final List<Widget> _pages = <Widget>[
     GamesOverviewScreen(), // CallsPage() example
-    const Icon(
-      Icons.camera,
-      size: 150,
-    ),
+    SignupPage(),
     const Icon(
       Icons.chat,
       size: 150,
@@ -49,20 +47,7 @@ class _mainPageState extends State<mainPage> {
             )),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      body: SafeArea(
-          child:
-          Center(
-            child: Column(
-              children: [
-                IndexedStack(
-                  index: _selectedIndex,
-                  children: _pages,
-                ),
-              ],
-            ),
-          )
-        ),
-
+      body: SafeArea(child: Center(child: _pages.elementAt(_selectedIndex))),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         selectedFontSize: 20,
