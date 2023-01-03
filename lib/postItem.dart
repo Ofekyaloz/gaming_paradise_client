@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-class GameItem extends StatelessWidget {
-  final String name;
+class PostItem extends StatelessWidget {
+  final String title;
+  final String body;
 
-  const GameItem(this.name, {super.key});
+  PostItem(this.title, this.body);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,19 @@ class GameItem extends StatelessWidget {
                 text: TextSpan(
                     style: const TextStyle(
                         color: Colors.black,
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold),
-                    text: name),
+                    text: title),
+              ),
+            ),
+            Flexible(
+              child: RichText(
+                overflow: TextOverflow.ellipsis,
+                // maxLines: 3,
+                strutStyle: const StrutStyle(fontSize: 12.0),
+                text: TextSpan(
+                    style: const TextStyle(color: Colors.black, fontSize: 15),
+                    text: body),
               ),
             )
           ],

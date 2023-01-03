@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gaming_social_network/postsOverviewScreen.dart';
 import 'signup.dart';
 import 'gameOverviewScreen.dart';
 
@@ -18,8 +19,9 @@ class _mainPageState extends State<mainPage> {
   }
 
   static final List<Widget> _pages = <Widget>[
+    PostsOverviewScreen(),
+
     GamesOverviewScreen(), // CallsPage() example
-    SignupPage(),
     const Icon(
       Icons.chat,
       size: 150,

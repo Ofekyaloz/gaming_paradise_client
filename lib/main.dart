@@ -337,10 +337,10 @@ class _MyAppState extends State<MyApp> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SignupPage()),
-                                //   builder: (context) =>
+                                // builder: (context) => SignupPage()),
+                                  builder: (context) =>
                                 //       mainPage()),
-                                      // postPage(post, false)), // get post id
+                                      postPage(post)), // get post id
                             );
                           },
                         )

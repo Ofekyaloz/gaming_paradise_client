@@ -10,10 +10,9 @@ import 'utils.dart';
 import 'Comment.dart';
 
 class postPage extends StatefulWidget {
-  postPage(this.post, this.editor, {super.key});
+  postPage(this.post, {super.key});
 
   Post post;
-  bool editor;
 
   @override
   State<postPage> createState() => _postPageState();
@@ -22,6 +21,7 @@ class postPage extends StatefulWidget {
 String title = "", content = "";
 
 class _postPageState extends State<postPage> {
+  late final bool editor;
   final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   bool _isEditMode = false;
@@ -30,6 +30,14 @@ class _postPageState extends State<postPage> {
   // String likes ="0";
   late Future<String> likes;
   // late Future<List> filedata;
+
+  @override
+  void initState() {
+    super.initState();
+    likes = fetchLikes();
+    // filedata = fetchComments();
+    editor = widget.post.UserName == Constants.username;
+  }
 
   Future<String> fetchLikes() async {
     final response =
@@ -52,13 +60,6 @@ class _postPageState extends State<postPage> {
     }
   }
 
-
-  @override
-  void initState() {
-    super.initState();
-    likes = fetchLikes();
-    // filedata = fetchComments();
-  }
 
   List comments = [{
       'name': 'Chuks Okwuenu',
@@ -216,7 +217,7 @@ class _postPageState extends State<postPage> {
   }
 
   Widget editButton() {
-    if (!widget.editor) {
+    if (!editor) {
       return const SizedBox();
     }
     if (_isEditMode) {

@@ -1,22 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gaming_social_network/postPage.dart';
+import 'postItem.dart';
 import 'package:http/http.dart';
-import 'gameItem.dart';
-import 'entities/Game.dart';
+import 'entities/Post.dart';
 import 'utils.dart';
 
-class GamesOverviewScreen extends StatefulWidget {
+class PostsOverviewScreen extends StatefulWidget {
   @override
-  _GamesOverviewScreenState createState() => _GamesOverviewScreenState();
+  _PostsOverviewScreenState createState() => _PostsOverviewScreenState();
 }
 
-class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
+class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   late bool _isLastPage;
   late int _pageNumber;
   late bool _error;
   late bool _loading;
   final int _numberOfPostsPerRequest = 10;
-  late List<Game> _posts;
+  late List<Post> _posts;
   final int _nextPageTrigger = 3;
   late int _lastloadindex;
 
@@ -35,11 +36,11 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
   Future<void> fetchData() async {
     try {
       final response =
-          await get(Uri.parse("${Constants.url}games?offset=$_pageNumber"));
+          await get(Uri.parse("${Constants.url}posts?offset=$_pageNumber"));
 
       List responseList = json.decode(response.body);
-      List<Game> postList =
-          responseList.map((data) => Game.fromJson(data)).toList();
+      List<Post> postList =
+          responseList.map((data) => Post.fromJson(data)).toList();
 
       setState(() {
         _isLastPage = postList.length < _numberOfPostsPerRequest;
@@ -113,7 +114,9 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
     return ListView.builder(
         itemCount: _posts.length + (_isLastPage ? 0 : 1),
         itemBuilder: (context, index) {
-          if (index == _posts.length - _nextPageTrigger && !_loading && index != _lastloadindex) {
+          if (index == _posts.length - _nextPageTrigger &&
+              !_loading &&
+              index != _lastloadindex) {
             fetchData();
             setState(() {
               _loading = true;
@@ -131,9 +134,12 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
               ));
             }
           }
-          final Game game = _posts[index];
-          return Padding(
-              padding: const EdgeInsets.all(15.0), child: Expanded(child: GameItem(game.Name)));
+          final Post post = _posts[index];
+          return GestureDetector(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => postPage(post))),
+              child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Expanded(child: PostItem(post.Title, post.Content))));
         });
   }
 }
