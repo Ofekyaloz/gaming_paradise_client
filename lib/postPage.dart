@@ -27,8 +27,7 @@ class _postPageState extends State<postPage> {
   bool _isEditMode = false;
   String text = "";
   String? error;
-  late int numOfComments;
-  // String likes ="0";
+  late String numOfComments;
   late Future<String> likes;
   late Future<List<Comment>> comments;
 
@@ -37,6 +36,7 @@ class _postPageState extends State<postPage> {
     super.initState();
     likes = fetchLikes();
     comments = fetchComments();
+    numOfComments = fetchNumOfComments() as String;
     editor = widget.post.UserName == Constants.username;
   }
 
@@ -50,16 +50,23 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  Future<String> fetchNumOfComments() async {
+    final response =
+    await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/amount/'));
+    if (response.statusCode == 200) {
+      return response.body.toString();
+    } else {
+      throw Exception('Failed to load likes');
+    }
+  }
+
+
   Future<List<Comment>> fetchComments() async {
     final response =
     await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      List<Comment> toReturn = jsonResponse.map((data) => Comment.fromJson(data)).toList();
-      setState(() {
-        numOfComments = toReturn.length;
-      });
-      return toReturn;
+      return jsonResponse.map((data) => Comment.fromJson(data)).toList();
     } else {
       throw Exception('Failed to load likes');
     }
@@ -140,6 +147,7 @@ class _postPageState extends State<postPage> {
       FocusScope.of(context).unfocus();
       setState(() {
         comments = fetchComments();
+        numOfComments = fetchNumOfComments() as String;
       });
       return;
     } else {

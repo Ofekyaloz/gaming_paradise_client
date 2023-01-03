@@ -83,7 +83,7 @@
 //                   children: [
 //                     const SizedBox(height: 20),
 //                     Text(
-//                       "${widget.post.GameName}: ",
+//                       "${widget.game.Name}",
 //                       softWrap: true,
 //                       style: const TextStyle(
 //                           fontSize: 40,
@@ -92,7 +92,7 @@
 //                     ),
 //                     const SizedBox(height: 20),
 //                     Text(
-//                       "By ${widget.post.UserName}",
+//                       "By ${widget.game.}",
 //                       softWrap: true,
 //                       style: const TextStyle(
 //                           fontSize: 25,
@@ -108,21 +108,16 @@
 //                           color: Colors.grey),
 //                     ),
 //                     const SizedBox(height: 40),
+//
 //                     InputDecorator(
 //                       decoration: InputDecoration(
-//                         border: !_isEditMode
-//                             ? OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(11.0),
-//                         )
-//                             : InputBorder.none,
+//                           border: OutlineInputBorder(
+//                               borderRadius: BorderRadius.circular(11.0))
 //                       ),
-//                       child: editData(
-//                           widget.post.Content,
-//                           const TextStyle(
+//                       child: Text(widget.game.OverView,
+//                            TextStyle(
 //                               fontSize: 25,
-//                               fontWeight: FontWeight.bold,
-//                               color: Colors.black),
-//                           "Content"),
+//                               fontWeight: FontWeight.bold)),
 //                     ),
 //                     Row(
 //                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -135,6 +130,6 @@
 //           ),
 //         ),
 //       ),
-//     ),);
+//     );
 //   }
 // }
