@@ -30,13 +30,13 @@ class _postPageState extends State<postPage> {
   late int numOfComments;
   // String likes ="0";
   late Future<String> likes;
-  late Future<List> filedata;
+  late Future<List<Comment>> comments;
 
   @override
   void initState() {
     super.initState();
     likes = fetchLikes();
-    filedata = fetchComments();
+    comments = fetchComments();
     editor = widget.post.UserName == Constants.username;
   }
 
@@ -55,39 +55,16 @@ class _postPageState extends State<postPage> {
     await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
+      List<Comment> toReturn = jsonResponse.map((data) => Comment.fromJson(data)).toList();
       setState(() {
-        numOfComments = jsonResponse.length;
+        numOfComments = toReturn.length;
       });
-      return jsonResponse.map((data) => Comment.fromJson(data)).toList();
+      return toReturn;
     } else {
       throw Exception('Failed to load likes');
     }
   }
 
-
-
-
-  // List comments = [{
-  //     'name': 'Chuks Okwuenu',
-  //     'pic': 'assets/icon-user-default.png',
-  //     'message': 'I love to code',
-  //     'date': '2021-01-01 12:00:00'
-  //   }, {
-  //     'name': 'Biggi Man',
-  //     'pic': 'assets/icon-user-default.png',
-  //     'message': 'Very cool',
-  //     'date': '2021-01-01 12:00:00'
-  //   }, {
-  //     'name': 'Tunde Martins',
-  //     'pic': 'assets/icon-user-default.png',
-  //     'message': 'Very cool',
-  //     'date': '2021-01-01 12:00:00'
-  //   }, {
-  //     'name': 'Biggi Man',
-  //     'pic': 'assets/icon-user-default.png',
-  //     'message': 'Very cool',
-  //     'date': '2021-01-01 12:00:00'
-  //   },];
 
   delPost() async {
     final respone = await http.delete(
@@ -125,7 +102,7 @@ class _postPageState extends State<postPage> {
       body: jsonEncode(<String, String>{
         'Title': title,
         'Content': content,
-        'UserName': 'Idog770'
+        'UserName': Constants.username!
       }),
     );
 
@@ -145,18 +122,6 @@ class _postPageState extends State<postPage> {
       return;
     }
 
-    // ofek ofek
-    // var value = {
-    //   'name': Constants.username.toString(),
-    //   'pic': 'assets/icon-user-default.png',
-    //   'message': commentController.text,
-    //   'date': '2021-01-01 12:00:00'
-    // };
-    // comments.insert(0, value);
-    // commentController.clear();
-    // FocusScope.of(context).unfocus();
-
-
     final response = await http.post(
       Uri.parse('${Constants.url}api/posts/${widget.post.Id}/comment/'),
       headers: <String, String>{
@@ -171,20 +136,11 @@ class _postPageState extends State<postPage> {
 
     if (response.statusCode == 200) {
       if (!mounted) return;
-      var value = {
-        'name': Constants.username.toString(),
-        'pic': 'assets/icon-user-default.png',
-        'message': commentController.text,
-        'date': '2021-01-01 12:00:00'
-      };
-      // filedata.insert(0, value);
       commentController.clear();
       FocusScope.of(context).unfocus();
-
       setState(() {
-        filedata = fetchComments();
+        comments = fetchComments();
       });
-
       return;
     } else {
       setState(() {
@@ -536,7 +492,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: commentChild(filedata)),
+                  Container(child: commentChild(comments)),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
