@@ -27,6 +27,7 @@ class _postPageState extends State<postPage> {
   bool _isEditMode = false;
   String text = "";
   String? error;
+  late int numOfComments;
   // String likes ="0";
   late Future<String> likes;
   late Future<List> filedata;
@@ -51,14 +52,19 @@ class _postPageState extends State<postPage> {
 
   Future<List<Comment>> fetchComments() async {
     final response =
-    await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/response/'));
+    await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
+      setState(() {
+        numOfComments = jsonResponse.length;
+      });
       return jsonResponse.map((data) => Comment.fromJson(data)).toList();
     } else {
       throw Exception('Failed to load likes');
     }
   }
+
+
 
 
   // List comments = [{
@@ -152,7 +158,7 @@ class _postPageState extends State<postPage> {
 
 
     final response = await http.post(
-      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/response/'),
+      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/comment/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -523,21 +529,7 @@ class _postPageState extends State<postPage> {
                         Row(
                           children: [
                             const Icon(Icons.comment_rounded),
-                            // Text(comments.length.toString())
-                            FutureBuilder<List<Comment>>(
-                              future: filedata = fetchComments(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Text(snapshot.data!.length.toString());
-                                }
-                                // else if (snapshot.hasError) {
-                                //   return const Text("0");
-                                // }
-                                // By default show a loading spinner.
-                                return const CircularProgressIndicator();
-                              },
-                            )
-
+                            Text(numOfComments.toString())
                           ],
                         ),
                       ]),
