@@ -27,7 +27,7 @@ class _postPageState extends State<postPage> {
   bool _isEditMode = false;
   String text = "";
   String? error;
-  late Future<String> numOfComments;
+  // late Future<String> numOfComments;
   // late Future<String> likes;
   late Future<List<Comment>> comments;
 
@@ -36,7 +36,7 @@ class _postPageState extends State<postPage> {
     super.initState();
     // likes = fetchLikes();
     comments = fetchComments();
-    numOfComments = fetchNumOfComments();
+    // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
   }
 
@@ -325,12 +325,12 @@ class _postPageState extends State<postPage> {
     }
   }
 
-  Widget showComments(data, len) {
+  Widget showComments(data) {
     return Container(
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            for (var i = 0; i < len; i++)
+            for (var comment in data)
               Padding(
                 padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
                 child: ListTile(
@@ -347,16 +347,16 @@ class _postPageState extends State<postPage> {
                       child: CircleAvatar(
                           radius: 50,
                           backgroundImage: CommentBox.commentImageParser(
-                              imageURLorPath: data[i]['pic'])),
+                              imageURLorPath: comment['pic'])),
                     ),
                   ),
                   title: Text(
-                    data[i]['name'],
+                    comment['name'],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(data[i]['message']),
+                  subtitle: Text(comment['message']),
                   trailing:
-                      Text(data[i]['date'], style: const TextStyle(fontSize: 10)),
+                      Text(comment['date'], style: const TextStyle(fontSize: 10)),
                 ),
               )
           ],
@@ -509,7 +509,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: showComments(comments, int.parse(numOfComments.toString()))),
+                  Container(child: showComments(comments)),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
