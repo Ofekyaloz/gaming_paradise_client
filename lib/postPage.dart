@@ -29,13 +29,13 @@ class _postPageState extends State<postPage> {
   String? error;
   // String likes ="0";
   late Future<String> likes;
-  // late Future<List> filedata;
+  late Future<List> filedata;
 
   @override
   void initState() {
     super.initState();
     likes = fetchLikes();
-    // filedata = fetchComments();
+    filedata = fetchComments();
     editor = widget.post.UserName == Constants.username;
   }
 
@@ -61,27 +61,27 @@ class _postPageState extends State<postPage> {
   }
 
 
-  List comments = [{
-      'name': 'Chuks Okwuenu',
-      'pic': 'assets/icon-user-default.png',
-      'message': 'I love to code',
-      'date': '2021-01-01 12:00:00'
-    }, {
-      'name': 'Biggi Man',
-      'pic': 'assets/icon-user-default.png',
-      'message': 'Very cool',
-      'date': '2021-01-01 12:00:00'
-    }, {
-      'name': 'Tunde Martins',
-      'pic': 'assets/icon-user-default.png',
-      'message': 'Very cool',
-      'date': '2021-01-01 12:00:00'
-    }, {
-      'name': 'Biggi Man',
-      'pic': 'assets/icon-user-default.png',
-      'message': 'Very cool',
-      'date': '2021-01-01 12:00:00'
-    },];
+  // List comments = [{
+  //     'name': 'Chuks Okwuenu',
+  //     'pic': 'assets/icon-user-default.png',
+  //     'message': 'I love to code',
+  //     'date': '2021-01-01 12:00:00'
+  //   }, {
+  //     'name': 'Biggi Man',
+  //     'pic': 'assets/icon-user-default.png',
+  //     'message': 'Very cool',
+  //     'date': '2021-01-01 12:00:00'
+  //   }, {
+  //     'name': 'Tunde Martins',
+  //     'pic': 'assets/icon-user-default.png',
+  //     'message': 'Very cool',
+  //     'date': '2021-01-01 12:00:00'
+  //   }, {
+  //     'name': 'Biggi Man',
+  //     'pic': 'assets/icon-user-default.png',
+  //     'message': 'Very cool',
+  //     'date': '2021-01-01 12:00:00'
+  //   },];
 
   delPost() async {
     final respone = await http.delete(
@@ -140,15 +140,15 @@ class _postPageState extends State<postPage> {
     }
 
     // ofek ofek
-    var value = {
-      'name': Constants.username.toString(),
-      'pic': 'assets/icon-user-default.png',
-      'message': commentController.text,
-      'date': '2021-01-01 12:00:00'
-    };
-    comments.insert(0, value);
-    commentController.clear();
-    FocusScope.of(context).unfocus();
+    // var value = {
+    //   'name': Constants.username.toString(),
+    //   'pic': 'assets/icon-user-default.png',
+    //   'message': commentController.text,
+    //   'date': '2021-01-01 12:00:00'
+    // };
+    // comments.insert(0, value);
+    // commentController.clear();
+    // FocusScope.of(context).unfocus();
 
 
     final response = await http.post(
@@ -174,6 +174,11 @@ class _postPageState extends State<postPage> {
       // filedata.insert(0, value);
       commentController.clear();
       FocusScope.of(context).unfocus();
+
+      setState(() {
+        filedata = fetchComments();
+      });
+
       return;
     } else {
       setState(() {
@@ -394,16 +399,16 @@ class _postPageState extends State<postPage> {
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
     // final bool success= await sendRequest();
-    // final response = await http.post(
-    //   Uri.parse('${Constants.url}api/posts/${widget.post.Id}/likes/${Constants.username}'),
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(<String, String>{
-    //     'UserName': Constants.username.toString(),
-    //   }),
-    // );
-    // return response.statusCode == 200? !isLiked:isLiked;
+    final response = await http.post(
+      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/likes/${Constants.username}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'UserName': Constants.username.toString(),
+      }),
+    );
+    return response.statusCode == 200? !isLiked:isLiked;
 
     return !isLiked;
   }
@@ -518,20 +523,20 @@ class _postPageState extends State<postPage> {
                         Row(
                           children: [
                             const Icon(Icons.comment_rounded),
-                            Text(comments.length.toString())
-                            // FutureBuilder<List<Comment>>(
-                            //   future: filedata = fetchComments(),
-                            //   builder: (context, snapshot) {
-                            //     if (snapshot.hasData) {
-                            //       return Text(snapshot.data!.length.toString());
-                            //     }
-                            //     // else if (snapshot.hasError) {
-                            //     //   return const Text("0");
-                            //     // }
-                            //     // By default show a loading spinner.
-                            //     return const CircularProgressIndicator();
-                            //   },
-                            // )
+                            // Text(comments.length.toString())
+                            FutureBuilder<List<Comment>>(
+                              future: filedata = fetchComments(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(snapshot.data!.length.toString());
+                                }
+                                // else if (snapshot.hasError) {
+                                //   return const Text("0");
+                                // }
+                                // By default show a loading spinner.
+                                return const CircularProgressIndicator();
+                              },
+                            )
 
                           ],
                         ),
@@ -539,7 +544,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: commentChild(comments)),
+                  Container(child: commentChild(filedata)),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
