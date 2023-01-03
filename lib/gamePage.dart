@@ -83,23 +83,24 @@
 //                   children: [
 //                     const SizedBox(height: 20),
 //                     Text(
-//                       "${widget.game.Name}",
+//                       widget.game.Name,
 //                       softWrap: true,
 //                       style: const TextStyle(
-//                           fontSize: 40,
+//                           fontSize: 30,
 //                           fontWeight: FontWeight.bold,
 //                           color: Colors.pink),
 //                     ),
-//                     const SizedBox(height: 20),
-//                     Text(
-//                       "By ${widget.game.}",
+//                     const SizedBox(height: 10),
+//                     widget.game.Developer != null ? Text(
+//                       "By ${widget.game.Developer}",
 //                       softWrap: true,
 //                       style: const TextStyle(
 //                           fontSize: 25,
 //                           fontWeight: FontWeight.bold,
 //                           color: Colors.lightBlueAccent),
-//                     ),
-//                     const SizedBox(height: 20),
+//                     ) : const SizedBox(),
+//
+//                     widget.game.Developer != null ? const SizedBox(height: 20) : const SizedBox(),
 //                     Text(
 //                       "Created: ${widget.post.TimestampCreated}",
 //                       style: const TextStyle(

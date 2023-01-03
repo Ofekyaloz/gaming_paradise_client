@@ -28,13 +28,13 @@ class _postPageState extends State<postPage> {
   String text = "";
   String? error;
   late Future<String> numOfComments;
-  late Future<String> likes;
+  // late Future<String> likes;
   late Future<List<Comment>> comments;
 
   @override
   void initState() {
     super.initState();
-    likes = fetchLikes();
+    // likes = fetchLikes();
     comments = fetchComments();
     numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
@@ -325,27 +325,25 @@ class _postPageState extends State<postPage> {
     }
   }
 
-  Widget commentChild(data) {
+  Widget showComments(data, len) {
     return Container(
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            for (var i = 0; i < data.length; i++)
+            for (var i = 0; i < len; i++)
               Padding(
                 padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
                 child: ListTile(
                   leading: GestureDetector(
-                    onTap: () async {
-                      // Display the image in large form.
-                      print("Comment Clicked");
-                    },
+                    // onTap: () async {
+                    // },
                     child: Container(
                       height: 50.0,
                       width: 50.0,
-                      decoration: new BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.blue,
                           borderRadius:
-                              new BorderRadius.all(Radius.circular(50))),
+                               BorderRadius.all(Radius.circular(50))),
                       child: CircleAvatar(
                           radius: 50,
                           backgroundImage: CommentBox.commentImageParser(
@@ -354,11 +352,11 @@ class _postPageState extends State<postPage> {
                   ),
                   title: Text(
                     data[i]['name'],
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(data[i]['message']),
                   trailing:
-                      Text(data[i]['date'], style: TextStyle(fontSize: 10)),
+                      Text(data[i]['date'], style: const TextStyle(fontSize: 10)),
                 ),
               )
           ],
@@ -379,7 +377,7 @@ class _postPageState extends State<postPage> {
     );
     return response.statusCode == 200? !isLiked:isLiked;
 
-    return !isLiked;
+    // return !isLiked;
   }
 
   @override
@@ -511,7 +509,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: commentChild(comments)),
+                  Container(child: showComments(comments, int.parse(numOfComments.toString()))),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
