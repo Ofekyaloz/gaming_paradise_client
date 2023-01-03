@@ -8,6 +8,7 @@ class GameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 100,
       width: double.infinity,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -20,7 +21,7 @@ class GameItem extends StatelessWidget {
             Flexible(
               child: RichText(
                 overflow: TextOverflow.ellipsis,
-                // maxLines: 3,
+                maxLines: 3,
                 strutStyle: const StrutStyle(fontSize: 12.0),
                 text: TextSpan(
                     style: const TextStyle(
