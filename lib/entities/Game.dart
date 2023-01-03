@@ -1,11 +1,11 @@
 class Game {
   String Name;
-  int ReleaseYear;
-  String Developer;
-  String Publisher;
+  int? ReleaseYear;
+  String? Developer;
+  String? Publisher;
   int MaxPlayers;
   String ESRB;
-  String OverView;
+  String? OverView;
 
   Game(this.Name, this.ReleaseYear, this.Developer, this.Publisher, this.MaxPlayers, this.ESRB, this.OverView);
 

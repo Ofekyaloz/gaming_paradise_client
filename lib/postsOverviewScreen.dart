@@ -36,7 +36,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   Future<void> fetchData() async {
     try {
       final response =
-          await get(Uri.parse("${Constants.url}posts?offset=$_pageNumber"));
+          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber"));
 
       List responseList = json.decode(response.body);
       List<Post> postList =
