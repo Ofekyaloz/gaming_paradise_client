@@ -133,7 +133,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
           }
           final Game game = _posts[index];
           return Padding(
-              padding: const EdgeInsets.all(15.0), child: Expanded(child: GameItem(game.Name)));
+              padding: const EdgeInsets.all(15.0), child: GameItem(game.Name));
         });
   }
 }

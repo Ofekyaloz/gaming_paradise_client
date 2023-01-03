@@ -19,13 +19,11 @@ class _mainPageState extends State<mainPage> {
   }
 
   static final List<Widget> _pages = <Widget>[
+    SignupPage(),
+
     PostsOverviewScreen(),
 
     GamesOverviewScreen(), // CallsPage() example
-    const Icon(
-      Icons.chat,
-      size: 150,
-    ),
   ];
 
   @override
@@ -67,7 +65,7 @@ class _mainPageState extends State<mainPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Posts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_fire_department_rounded),

@@ -139,7 +139,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => postPage(post))),
               child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Expanded(child: PostItem(post.Title, post.Content))));
+                  child: PostItem(post.Title, post.Content)));
         });
   }
 }
