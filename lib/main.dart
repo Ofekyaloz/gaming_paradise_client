@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:comment_box/comment/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'mainPage.dart';
 import 'gameOverviewScreen.dart';
 import 'signup.dart';
 import 'new_post.dart';
@@ -111,7 +112,7 @@ class _MyAppState extends State<MyApp> {
         MaterialPageRoute(
           // builder: (context) => SignupPage(users)),
           // builder: (context) => postPage(post, true)),
-            builder: (context) => GamesOverviewScreen()),
+            builder: (context) => mainPage()),
       );
       return;
     } else {
@@ -332,7 +333,8 @@ class _MyAppState extends State<MyApp> {
                               MaterialPageRoute(
                                 // builder: (context) => SignupPage()),
                                   builder: (context) =>
-                                      postPage(post, false)), // get post id
+                                      mainPage()),
+                                      // postPage(post, false)), // get post id
                             );
                           },
                         )

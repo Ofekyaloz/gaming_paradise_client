@@ -1,6 +1,6 @@
 class Game {
   String Name;
-  String ReleaseYear;
+  int ReleaseYear;
   String Developer;
   String Publisher;
   int MaxPlayers;

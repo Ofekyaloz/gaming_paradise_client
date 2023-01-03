@@ -34,7 +34,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
   Future<void> fetchData() async {
     try {
       final response = await get(Uri.parse(
-          "${Constants.url}gaes?offset=$_pageNumber"));
+          "${Constants.url}games?offset=$_pageNumber/"));
 
       List responseList = json.decode(response.body);
       List<Game> postList = responseList.map((data) => Game.fromJson(data)).toList();
@@ -86,10 +86,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Blog App"), centerTitle: true,),
-      body: buildPostsView(),
-    );
+    return buildPostsView();
   }
 
   Widget buildPostsView() {
@@ -129,7 +126,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
           final Game game = _posts[index];
           return Padding(
               padding: const EdgeInsets.all(15.0),
-              child: GameItem(game.Name, game.ReleaseYear, game.Developer, game.Publisher, game.MaxPlayers, game.ESRB, game.OverView)
+              child: GameItem(game.Name)
           );
         });
   }
