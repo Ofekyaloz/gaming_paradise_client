@@ -27,7 +27,7 @@ class _postPageState extends State<postPage> {
   bool _isEditMode = false;
   String text = "";
   String? error;
-  late String numOfComments;
+  late Future<String> numOfComments;
   late Future<String> likes;
   late Future<List<Comment>> comments;
 
@@ -36,7 +36,7 @@ class _postPageState extends State<postPage> {
     super.initState();
     likes = fetchLikes();
     comments = fetchComments();
-    numOfComments = fetchNumOfComments() as String;
+    numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
   }
 
@@ -56,7 +56,7 @@ class _postPageState extends State<postPage> {
     if (response.statusCode == 200) {
       return response.body.toString();
     } else {
-      throw Exception('Failed to load likes');
+      throw Exception('Failed to load num of comments');
     }
   }
 
@@ -68,7 +68,7 @@ class _postPageState extends State<postPage> {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Comment.fromJson(data)).toList();
     } else {
-      throw Exception('Failed to load likes');
+      throw Exception('Failed to load comments');
     }
   }
 
@@ -147,7 +147,6 @@ class _postPageState extends State<postPage> {
       FocusScope.of(context).unfocus();
       setState(() {
         comments = fetchComments();
-        numOfComments = fetchNumOfComments() as String;
       });
       return;
     } else {
@@ -493,7 +492,19 @@ class _postPageState extends State<postPage> {
                         Row(
                           children: [
                             const Icon(Icons.comment_rounded),
-                            Text(numOfComments.toString())
+                            FutureBuilder<String>(
+                              future: fetchNumOfComments(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(snapshot.data!.toString());
+                                }
+                                // else if (snapshot.hasError) {
+                                // return Text('${snapshot.error}');
+                                // }
+                                return const Text("0");
+                                // return const CircularProgressIndicator();
+                              },
+                            ),
                           ],
                         ),
                       ]),
