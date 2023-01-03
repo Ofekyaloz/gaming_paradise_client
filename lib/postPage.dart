@@ -30,14 +30,16 @@ class _postPageState extends State<postPage> {
   // late Future<String> numOfComments;
   // late Future<String> likes;
   late Future<List<Comment>> comments;
+  late List<Comment> commentList;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     // likes = fetchLikes();
     comments = fetchComments();
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
+    commentList = await comments;
   }
 
   Future<String> fetchLikes() async {
@@ -509,7 +511,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: showComments(comments)),
+                  Container(child: showComments(commentList)),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,

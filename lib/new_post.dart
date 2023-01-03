@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class NewPost extends StatefulWidget {
-  NewPost(this.username, this.gamename, {super.key});
-  String username;
+  NewPost(this.gamename, {super.key});
   String gamename;
 
   @override
@@ -30,15 +29,6 @@ class _NewPostState extends State<NewPost> {
 
   Future<void> createpost() async {
     if (_formKey.currentState!.validate()) {
-      // Post post = Post(widget.username, titleController.text, DateTime.now().toString(), contentController.text, "game"); // update game
-
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => ChoosePage(friends, user),
-      //         settings: RouteSettings(
-      //           arguments: fullNameController.text,
-      //         )));
 
       final response = await http.post(
         Uri.parse('${Constants.url}api/posts/'),
@@ -46,7 +36,7 @@ class _NewPostState extends State<NewPost> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'UserName': widget.username,
+          'UserName': Constants.username!,
           'Title' : titleController.text,
           'GameName': widget.gamename,
           'TimestampCreated': DateTime.now().toString(),
@@ -65,7 +55,6 @@ class _NewPostState extends State<NewPost> {
         });
         throw Exception('Failed to register.');
       }
-
     }
   }
 

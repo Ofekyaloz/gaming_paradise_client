@@ -305,7 +305,7 @@ class _MyAppState extends State<MyApp> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      NewPost("ofek", "The Sims 3")),
+                                      NewPost("The Sims 3")),
                             );
                           },
                           child:
@@ -337,10 +337,10 @@ class _MyAppState extends State<MyApp> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                // builder: (context) => SignupPage()),
-                                  builder: (context) =>
+                                builder: (context) => SignupPage()),
+                                //   builder: (context) =>
                                 //       mainPage()),
-                                      postPage(post)), // get post id
+                                //       postPage(post)), // get post id
                             );
                           },
                         )

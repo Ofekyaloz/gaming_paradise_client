@@ -22,6 +22,7 @@ class _mainPageState extends State<mainPage> {
     PostsOverviewScreen(),
 
     GamesOverviewScreen(), // CallsPage() example
+
     SignupPage(),
   ];
 
