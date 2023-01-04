@@ -30,6 +30,7 @@ class _postPageState extends State<postPage> {
   // late Future<String> numOfComments;
   // late Future<String> likes;
   late List<Comment> commentList;
+  late bool liked;
 
   @override
   initState() {
@@ -39,6 +40,7 @@ class _postPageState extends State<postPage> {
     commentList = [];
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
+    liked = false;
   }
 
   Future<String> fetchLikes() async {
@@ -372,6 +374,7 @@ class _postPageState extends State<postPage> {
   }
 
 
+
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
     // final bool success= await sendRequest();
@@ -384,8 +387,17 @@ class _postPageState extends State<postPage> {
         'UserName': Constants.username.toString(),
       }),
     );
-    return response.statusCode == 200? !isLiked:isLiked;
-
+    if (response.statusCode == 200) {
+      setState(() {
+        liked = true;
+      });
+      return true;
+    } else {
+      setState(() {
+        liked = false;
+      });
+      return false;
+    }
     // return !isLiked;
   }
 
@@ -479,6 +491,7 @@ class _postPageState extends State<postPage> {
                         Row(
                           children: [
                             LikeButton(
+                              isLiked: liked,
                               onTap: onLikeButtonTapped,
                             ),
                             FutureBuilder<String>(
@@ -518,7 +531,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Scaffold (body: showComments()),
+                  Center (child: showComments()),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
