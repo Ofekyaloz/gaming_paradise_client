@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'gamePage.dart';
 import 'package:http/http.dart';
 import 'gameItem.dart';
 import 'entities/Game.dart';
@@ -132,8 +133,11 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
             }
           }
           final Game game = _posts[index];
-          return Padding(
-              padding: const EdgeInsets.all(15.0), child: GameItem(game.Name));
+          return GestureDetector(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => gamePage(game))),
+            child: Padding(
+                padding: const EdgeInsets.all(15.0), child: GameItem(game.Name)),
+          );
         });
   }
 }
