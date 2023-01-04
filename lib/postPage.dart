@@ -332,43 +332,45 @@ class _postPageState extends State<postPage> {
     }
   }
 
-  Widget showComments(data) {
+  Widget showComments() {
     return Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            for (var comment in data)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
-                child: ListTile(
-                  leading: GestureDetector(
-                    // onTap: () async {
-                    // },
-                    child: Container(
-                      height: 50.0,
-                      width: 50.0,
-                      decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius:
-                               BorderRadius.all(Radius.circular(50))),
-                      child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: CommentBox.commentImageParser(
-                              imageURLorPath: comment['pic'])),
-                    ),
+      padding: const EdgeInsets.all(8),
+      child: ListView.builder(
+          itemCount: commentList.length,
+          itemBuilder: (context, index) {
+            final Comment comment = commentList[index];
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
+              child: ListTile(
+                leading: GestureDetector(
+                  // onTap: () async {
+                  // },
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    decoration: const BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(50))),
+                    // child: CircleAvatar(
+                    //     radius: 50,
+                    //     backgroundImage: CommentBox.commentImageParser(
+                    //         imageURLorPath: )),
                   ),
-                  title: Text(
-                    comment['name'],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(comment['message']),
-                  trailing:
-                      Text(comment['date'], style: const TextStyle(fontSize: 10)),
                 ),
-              )
-          ],
-        ));
+                title: Text(
+                  comment.UserName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(comment.Content),
+                // trailing:
+                // Text(comment.Da, style: const TextStyle(fontSize: 10)),
+              ),
+            );
+          }),
+    );
   }
+
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
@@ -516,7 +518,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Container(child: showComments(commentList)),
+                  showComments(),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
