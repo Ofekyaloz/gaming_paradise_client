@@ -10,6 +10,7 @@ import 'utils.dart';
 
 class gamePage extends StatefulWidget {
   gamePage(this.game, {super.key});
+
   Game game;
 
   @override
@@ -102,7 +103,7 @@ class _gamePageState extends State<gamePage> {
                             "By ${widget.game.Developer}",
                             softWrap: true,
                             style: const TextStyle(
-                                fontSize: 25,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.lightBlueAccent),
                           )
@@ -137,7 +138,6 @@ class _gamePageState extends State<gamePage> {
                           fontWeight: FontWeight.bold,
                           color: Colors.grey),
                     ),
-                    const SizedBox(height: 5),
                     const SizedBox(height: 20),
                     InputDecorator(
                         decoration: InputDecoration(
@@ -149,12 +149,14 @@ class _gamePageState extends State<gamePage> {
                         ),
                         child: widget.game.OverView != null
                             ? Text(widget.game.OverView!,
+                                softWrap: true,
                                 style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold))
+                                  fontSize: 12,
+                                ))
                             : const SizedBox()),
-                    const SizedBox(
-                      height: 30,
-                    ),
+
+                    const SizedBox(height: 30),
+
                     PostsOverviewScreen(),
                   ]),
             ),
