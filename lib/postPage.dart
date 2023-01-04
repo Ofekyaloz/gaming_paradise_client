@@ -288,7 +288,8 @@ class _postPageState extends State<postPage> {
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
-              ))
+              )),
+          const SizedBox(height: 20,)
         ],
       );
     }
@@ -408,16 +409,14 @@ class _postPageState extends State<postPage> {
     );
     if (response.statusCode == 200) {
       setState(() {
-        liked = true;
         showIfLiked();
       });
-      return true;
+      return liked;
     } else {
       setState(() {
-        liked = false;
         showIfLiked();
       });
-      return false;
+      return liked;
     }
     // return !isLiked;
   }
@@ -550,9 +549,11 @@ class _postPageState extends State<postPage> {
                         ),
                       ]),
                   const SizedBox(height: 40),
+
                   editButton(),
-                  const SizedBox(height: 20),
-                  showComments(),
+
+                  // showComments(),
+
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,

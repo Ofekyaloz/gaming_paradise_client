@@ -21,7 +21,7 @@ class _mainPageState extends State<mainPage> {
   static final List<Widget> _pages = <Widget>[
     PostsOverviewScreen(),
 
-    GamesOverviewScreen(), // CallsPage() example
+    GamesOverviewScreen(),
 
     SignupPage(),
   ];
@@ -60,7 +60,7 @@ class _mainPageState extends State<mainPage> {
         ),
         unselectedItemColor: Colors.deepOrangeAccent,
         currentIndex: _selectedIndex,
-        //New
+
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
