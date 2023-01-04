@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:like_button/like_button.dart';
 import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +42,7 @@ class _postPageState extends State<postPage> {
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
     liked = false;
+    isLiked();
   }
 
   Future<String> fetchLikes() async {
@@ -335,7 +337,10 @@ class _postPageState extends State<postPage> {
   }
 
   Widget showComments() {
-    return Container(
+    if (commentList.isEmpty) {
+      return const SizedBox();
+    }
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(8),
       child: ListView.builder(
           itemCount: commentList.length,
@@ -373,6 +378,20 @@ class _postPageState extends State<postPage> {
     );
   }
 
+
+  Future<void> isLiked() async {
+    try {
+      final response =
+      await get(Uri.parse("${Constants.url}posts/${widget.post.Id}/likes/${Constants.username}"));
+      setState(() {
+        liked = true;
+      });
+    } catch (e) {
+      setState(() {
+       liked = false;
+      });
+    }
+  }
 
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
@@ -531,7 +550,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  Center (child: showComments()),
+                  showComments(),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
