@@ -36,6 +36,7 @@ class _postPageState extends State<postPage> {
     super.initState();
     // likes = fetchLikes();
     fetchComments();
+    commentList = [];
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
   }
