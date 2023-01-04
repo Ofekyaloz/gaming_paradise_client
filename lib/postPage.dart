@@ -42,7 +42,7 @@ class _postPageState extends State<postPage> {
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
     liked = false;
-    isLiked();
+    showIfLiked();
   }
 
   Future<String> fetchLikes() async {
@@ -379,7 +379,7 @@ class _postPageState extends State<postPage> {
   }
 
 
-  Future<void> isLiked() async {
+  Future<void> showIfLiked() async {
     try {
       final response =
       await get(Uri.parse("${Constants.url}posts/${widget.post.Id}/likes/${Constants.username}"));
@@ -409,11 +409,13 @@ class _postPageState extends State<postPage> {
     if (response.statusCode == 200) {
       setState(() {
         liked = true;
+        showIfLiked();
       });
       return true;
     } else {
       setState(() {
         liked = false;
+        showIfLiked();
       });
       return false;
     }
