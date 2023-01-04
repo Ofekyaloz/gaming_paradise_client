@@ -29,17 +29,15 @@ class _postPageState extends State<postPage> {
   String? error;
   // late Future<String> numOfComments;
   // late Future<String> likes;
-  late Future<List<Comment>> comments;
   late List<Comment> commentList;
 
   @override
-  Future<void> initState() async {
+  initState() {
     super.initState();
     // likes = fetchLikes();
-    comments = fetchComments();
+    fetchComments();
     // numOfComments = fetchNumOfComments();
     editor = widget.post.UserName == Constants.username;
-    commentList = await comments;
   }
 
   Future<String> fetchLikes() async {
@@ -63,15 +61,21 @@ class _postPageState extends State<postPage> {
   }
 
 
-  Future<List<Comment>> fetchComments() async {
-    final response =
-    await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'));
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((data) => Comment.fromJson(data)).toList();
-    } else {
-      throw Exception('Failed to load comments');
+  Future<void> fetchComments() async {
+    try {
+      final response =
+      await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'));
+      List responseList = json.decode(response.body);
+      List<Comment> tmpList = responseList.map((data) => Comment.fromJson(data)).toList();
+
+      setState(() {
+        commentList.addAll(tmpList);
+      });
+
+    } catch(e) {
+      print("error --> $e");
     }
+
   }
 
 
@@ -148,7 +152,7 @@ class _postPageState extends State<postPage> {
       commentController.clear();
       FocusScope.of(context).unfocus();
       setState(() {
-        comments = fetchComments();
+        fetchComments();
       });
       return;
     } else {
