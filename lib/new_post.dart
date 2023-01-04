@@ -31,7 +31,7 @@ class _NewPostState extends State<NewPost> {
     if (_formKey.currentState!.validate()) {
 
       final response = await http.post(
-        Uri.parse('${Constants.url}api/posts/'),
+        Uri.parse('${Constants.url}posts/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

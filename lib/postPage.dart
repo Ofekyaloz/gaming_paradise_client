@@ -82,7 +82,7 @@ class _postPageState extends State<postPage> {
 
   delPost() async {
     final respone = await http.delete(
-        Uri.parse('${Constants.url}api/posts/${widget.post.Id}/'),
+        Uri.parse('${Constants.url}posts/${widget.post.Id}/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         });
@@ -109,7 +109,7 @@ class _postPageState extends State<postPage> {
       return;
     }
     final response = await http.put(
-      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/'),
+      Uri.parse('${Constants.url}posts/${widget.post.Id}/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -137,7 +137,7 @@ class _postPageState extends State<postPage> {
     }
 
     final response = await http.post(
-      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/comment/'),
+      Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -376,7 +376,7 @@ class _postPageState extends State<postPage> {
     /// send your request here
     // final bool success= await sendRequest();
     final response = await http.post(
-      Uri.parse('${Constants.url}api/posts/${widget.post.Id}/likes/${Constants.username}'),
+      Uri.parse('${Constants.url}posts/${widget.post.Id}/likes/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -518,7 +518,7 @@ class _postPageState extends State<postPage> {
                   const SizedBox(height: 40),
                   editButton(),
                   const SizedBox(height: 20),
-                  showComments(),
+                  Scaffold (body: showComments()),
                   const SizedBox(height: 20),
                   Form(
                     key: formKey,
