@@ -39,8 +39,7 @@ class _NewPostState extends State<NewPost> {
           'UserName': Constants.username!,
           'Title' : titleController.text,
           'GameName': widget.gamename,
-          'TimestampCreated': DateTime.now().toString(),
-          'Context': contentController.text,
+          'Content': contentController.text,
         }),
       );
 

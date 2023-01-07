@@ -26,16 +26,6 @@ class _gamePageState extends State<gamePage> {
     posts = fetchPosts();
   }
 
-  // Future<String> fetchLikes() async {
-  //   final response =
-  //   await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/likes/'));
-  //   if (response.statusCode == 200) {
-  //     return response.body;
-  //   } else {
-  //     throw Exception('Failed to load likes');
-  //   }
-  // }
-
   Future<List<Post>> fetchPosts() async {
     final response =
         await http.get(Uri.parse('${Constants.url}games/${widget.game.Name}/'));
@@ -97,46 +87,46 @@ class _gamePageState extends State<gamePage> {
                           fontWeight: FontWeight.bold,
                           color: Colors.pink),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     widget.game.Developer != null
                         ? Text(
                             "By ${widget.game.Developer}",
                             softWrap: true,
                             style: const TextStyle(
-                                fontSize: 15,
+                                fontSize: 25,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.lightBlueAccent),
                           )
                         : const SizedBox(),
                     widget.game.Developer != null
-                        ? const SizedBox(height: 5)
+                        ? const SizedBox(height: 20)
                         : const SizedBox(),
                     widget.game.ReleaseYear != null
                         ? Text(
                             "ReleaseYear: ${widget.game.ReleaseYear}",
                             style: const TextStyle(
-                                fontSize: 15,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey),
+                                color: Colors.red),
                           )
                         : const SizedBox(),
                     widget.game.ReleaseYear != null
-                        ? const SizedBox(height: 5)
+                        ? const SizedBox(height: 20)
                         : const SizedBox(),
                     Text(
                       "MaxPlayers: ${widget.game.MaxPlayers}",
                       style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey),
+                          color: Colors.green),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 20),
                     Text(
                       "ESRB: ${widget.game.ESRB}",
                       style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey),
+                          color: Colors.teal),
                     ),
                     const SizedBox(height: 20),
                     InputDecorator(
@@ -151,13 +141,12 @@ class _gamePageState extends State<gamePage> {
                             ? Text(widget.game.OverView!,
                                 softWrap: true,
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 20,
                                 ))
                             : const SizedBox()),
 
                     const SizedBox(height: 30),
-
-                    PostsOverviewScreen(),
+                    // PostsOverviewScreen()
                   ]),
             ),
           ),
