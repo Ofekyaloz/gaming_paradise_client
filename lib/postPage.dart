@@ -8,7 +8,7 @@ import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'utils.dart';
-import 'Comment.dart';
+import 'entities/Comment.dart';
 
 class postPage extends StatefulWidget {
   postPage(this.post, {super.key});
