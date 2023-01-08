@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'entities/FullGame.dart';
 import 'gameInfo.dart';
 import 'postsOverviewScreen.dart';
 import 'entities/Game.dart';
@@ -11,7 +12,6 @@ import 'utils.dart';
 
 class gamePage extends StatefulWidget {
   gamePage(this.game, {super.key});
-
   Game game;
 
   @override
@@ -19,7 +19,7 @@ class gamePage extends StatefulWidget {
 }
 
 class _gamePageState extends State<gamePage> {
-  late Future<List<Post>> posts;
+  // late Future<List<Post>> posts;
   int _selectedIndex = 0;
   late final List<Widget> _pages;
 
@@ -32,22 +32,24 @@ class _gamePageState extends State<gamePage> {
   @override
   void initState() {
     super.initState();
-    posts = fetchPosts();
+    // posts = fetchPosts();
+
     _pages =  <Widget>[
       GameInfo(widget.game),
       PostsOverviewScreen(),
     ];
   }
 
-  Future<List<Post>> fetchPosts() async {
-    final response = await http.get(Uri.parse('${Constants.url}games/${widget.game.Name}/'));
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((data) => Post.fromJson(data)).toList();
-    } else {
-      throw Exception('Failed to load likes');
-    }
-  }
+
+  // Future<List<Post>> fetchPosts() async {
+  //   final response = await http.get(Uri.parse('${Constants.url}games/${widget.game.Name}/'));
+  //   if (response.statusCode == 200) {
+  //     List jsonResponse = json.decode(response.body);
+  //     return jsonResponse.map((data) => Post.fromJson(data)).toList();
+  //   } else {
+  //     throw Exception('Failed to load likes');
+  //   }
+  // }
 
 
   @override

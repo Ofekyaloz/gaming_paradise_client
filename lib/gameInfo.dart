@@ -1,11 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'utils.dart';
+import 'entities/FullGame.dart';
 import 'entities/Game.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class GameInfo extends StatefulWidget {
   GameInfo(this.game, {super.key});
-
   Game game;
 
   @override
@@ -13,6 +14,29 @@ class GameInfo extends StatefulWidget {
 }
 
 class _GameInfoState extends State<GameInfo> {
+  late List<String> platforms;
+  late List<String> genres;
+
+  void initState() {
+    super.initState();
+    platforms = [];
+    genres = [];
+    fetchFullGame();
+  }
+
+  Future<void> fetchFullGame() async {
+    final response = await http.get(Uri.parse('${Constants.url}games/${widget.game.Name}'));
+    if (response.statusCode == 200) {
+      FullGame g = FullGame.fromJson(jsonDecode(response.body));
+      setState(() {
+        platforms = g.Platforms;
+        genres = g.Genres;
+      });
+    } else {
+      throw Exception('Failed to load FullGame');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -60,6 +84,22 @@ class _GameInfoState extends State<GameInfo> {
                         fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal),
                   ),
                   const SizedBox(height: 20),
+                  genres.isNotEmpty
+                      ? Text(
+                    "Genres: ${genres.join(', ')}",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                  )
+                      : const SizedBox(),
+                  genres.isNotEmpty ? const SizedBox(height: 20) : const SizedBox(),
+                  platforms.isNotEmpty
+                      ? Text(
+                    "Platform: ${platforms.join(', ')}",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                  )
+                      : const SizedBox(),
+                  platforms.isNotEmpty ? const SizedBox(height: 20) : const SizedBox(),
                   InputDecorator(
                       decoration: InputDecoration(
                         border: widget.game.OverView != null
