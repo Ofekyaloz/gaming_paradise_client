@@ -71,6 +71,7 @@ class _postPageState extends State<postPage> {
       List<Comment> tmpList = responseList.map((data) => Comment.fromJson(data)).toList();
 
       setState(() {
+        commentList = [];
         commentList.addAll(tmpList);
       });
     } catch (e) {
@@ -89,6 +90,8 @@ class _postPageState extends State<postPage> {
         error = "Failed to delete.";
       });
       throw Exception('Failed to delete.');
+    } else {
+      Navigator.pop(context);
     }
   }
 
@@ -309,7 +312,7 @@ class _postPageState extends State<postPage> {
         style: const TextStyle(fontSize: 15),
         initialValue: str,
         maxLines: max((str.length / 10).floor(), 10),
-        minLines: min((str.length / 10).floor(), 2),
+        minLines: min((str.length / 10).floor() + 1, 2),
         onChanged: (value) {
           if (label == "Title") {
             title = value;
@@ -327,42 +330,45 @@ class _postPageState extends State<postPage> {
     if (commentList.isEmpty) {
       return const SizedBox();
     }
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(8),
+    return Container(
       child: ListView.builder(
-          itemCount: commentList.length,
-          itemBuilder: (context, index) {
-            final Comment comment = commentList[index];
-            return Text(comment.Content);
-            // return Padding(
-            //   padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
-            //   child: ListTile(
-            //     leading: GestureDetector(
-            //       // onTap: () async {
-            //       // },
-            //       child: Container(
-            //         height: 50.0,
-            //         width: 50.0,
-            //         decoration: const BoxDecoration(
-            //             color: Colors.blue,
-            //             borderRadius:
-            //             BorderRadius.all(Radius.circular(50))),
-            //         child: CircleAvatar(
-            //             radius: 50,
-            //             backgroundImage: CommentBox.commentImageParser(
-            //                 imageURLorPath: 'assets/img/userpic.jpg')),
-            //       ),
-            //     ),
-            //     title: Text(
-            //       comment.UserName,
-            //       style: const TextStyle(fontWeight: FontWeight.bold),
-            //     ),
-            //     subtitle: Text(comment.Content),
-            //     // trailing:
-            //     // Text(comment.Da, style: const TextStyle(fontSize: 10)),
-            //   ),
-            // );
-          }),
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: commentList.length,
+        itemBuilder: (context, index) {
+          final Comment comment = commentList[index];
+          // return Text(comment.Content);
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
+            child: ListTile(
+              leading: GestureDetector(
+                // onTap: () async {
+                // },
+                child: Container(
+                  height: 50.0,
+                  width: 50.0,
+                  decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(50))),
+                  child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: CommentBox.commentImageParser(
+                          imageURLorPath: 'assets/icon-user-default.png')),
+                ),
+              ),
+              title: Text(
+                comment.UserName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(comment.Content),
+              // trailing:
+              // Text(comment.Da, style: const TextStyle(fontSize: 10)),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -429,12 +435,14 @@ class _postPageState extends State<postPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
           child: Padding(
             padding: EdgeInsets.fromLTRB(10, 10, 10, MediaQuery.of(context).viewInsets.bottom),
             child: Container(
               width: double.infinity,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   showAlert(),
                   const SizedBox(height: 20),
@@ -442,7 +450,7 @@ class _postPageState extends State<postPage> {
                     "${widget.post.GameName}: ",
                     softWrap: true,
                     style: const TextStyle(
-                        fontSize: 40, fontWeight: FontWeight.bold, color: Colors.pink),
+                        fontSize: 30, fontWeight: FontWeight.bold, color: Colors.pink),
                   ),
                   const SizedBox(height: 20),
                   editData(
@@ -526,9 +534,8 @@ class _postPageState extends State<postPage> {
 
                   editButton(),
 
-                  // showComments(),
-
                   const SizedBox(height: 20),
+
                   Form(
                     key: formKey,
                     child: Column(
@@ -537,7 +544,7 @@ class _postPageState extends State<postPage> {
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(100),
                           ],
-                          minLines: 5,
+                          minLines: 3,
                           maxLines: 20,
                           controller: commentController,
                           decoration: const InputDecoration(
@@ -557,16 +564,16 @@ class _postPageState extends State<postPage> {
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
-                          width: 90,
+                          width: 110,
                           child: MaterialButton(
                               height: 60,
-                              minWidth: 90,
                               onPressed: commentController.text.isNotEmpty ? sendComment : null,
-                              color: Colors.grey,
+                              color: Colors.pink,
                               shape:
                                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                                 children: const [
                                   Text(
                                     "Send",
@@ -575,9 +582,6 @@ class _postPageState extends State<postPage> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
                                   Icon(Icons.send)
                                 ],
                               )),
@@ -585,6 +589,11 @@ class _postPageState extends State<postPage> {
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 10),
+
+                  showComments(),
+
                   const SizedBox(height: 10),
                 ],
               ),

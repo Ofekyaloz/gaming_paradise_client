@@ -7,6 +7,10 @@ import 'entities/Post.dart';
 import 'utils.dart';
 
 class PostsOverviewScreen extends StatefulWidget {
+  PostsOverviewScreen(this.isGamePage, {super.key});
+
+  bool isGamePage;
+
   @override
   _PostsOverviewScreenState createState() => _PostsOverviewScreenState();
 }
@@ -35,12 +39,15 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response =
-          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber"));
-
+      // "posts/popular/user/${Constants.username}"
+      Response response;
+      if (widget.isGamePage) {
+        response = await get(Uri.parse("${Constants.url}posts/popular/user/${Constants.username}?offset=$_pageNumber"));
+      } else {
+        response = await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber"));
+      }
       List responseList = json.decode(response.body);
-      List<Post> postList =
-          responseList.map((data) => Post.fromJson(data)).toList();
+      List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();
 
       setState(() {
         _isLastPage = postList.length < _numberOfPostsPerRequest;
@@ -49,7 +56,6 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         _posts.addAll(postList);
       });
     } catch (e) {
-      print("error --> $e");
       setState(() {
         _loading = false;
         _error = true;
@@ -67,10 +73,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         children: [
           Text(
             'An error occurred when fetching the posts.',
-            style: TextStyle(
-                fontSize: size,
-                fontWeight: FontWeight.w500,
-                color: Colors.black),
+            style: TextStyle(fontSize: size, fontWeight: FontWeight.w500, color: Colors.black),
           ),
           const SizedBox(
             height: 10,
@@ -111,35 +114,48 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         return Center(child: errorDialog(size: 20));
       }
     }
-    return ListView.builder(
-        itemCount: _posts.length + (_isLastPage ? 0 : 1),
-        itemBuilder: (context, index) {
-          if (index == _posts.length - _nextPageTrigger &&
-              !_loading &&
-              index != _lastloadindex) {
-            fetchData();
+    return RefreshIndicator(
+        onRefresh: () {
+          return Future.delayed(const Duration(seconds: 2), () {
             setState(() {
+              _pageNumber = 0;
+              _lastloadindex = 0;
               _loading = true;
-              _lastloadindex = index;
+              _posts = [];
+              fetchData();
             });
-          }
-          if (index == _posts.length) {
-            if (_error) {
-              return Center(child: errorDialog(size: 15));
-            } else {
-              return const Center(
+          });
+        },
+        child: ListView.builder(
+            itemCount: _posts.length + (_isLastPage ? 0 : 1),
+            itemBuilder: (context, index) {
+              if (index == _posts.length - _nextPageTrigger &&
+                  !_loading &&
+                  index != _lastloadindex) {
+                fetchData();
+                setState(() {
+                  _loading = true;
+                  _lastloadindex = index;
+                });
+              }
+              if (index == _posts.length) {
+                if (_error) {
+                  return Center(child: errorDialog(size: 15));
+                } else {
+                  return const Center(
+                      child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ));
+                }
+              }
+              final Post post = _posts[index];
+              return GestureDetector(
+                  onTap: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => postPage(post))),
                   child: Padding(
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(),
-              ));
-            }
-          }
-          final Post post = _posts[index];
-          return GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => postPage(post))),
-              child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: PostItem(post.Title, post.Content)));
-        });
+                      padding: const EdgeInsets.all(15.0),
+                      child: PostItem(post.Title, post.Content)));
+            }));
   }
 }

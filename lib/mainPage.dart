@@ -19,7 +19,7 @@ class _mainPageState extends State<mainPage> {
   }
 
   static final List<Widget> _pages = <Widget>[
-    PostsOverviewScreen(),
+    PostsOverviewScreen(false),
 
     GamesOverviewScreen(),
 
@@ -47,7 +47,10 @@ class _mainPageState extends State<mainPage> {
             )),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      body: SafeArea(child: Center(child: _pages.elementAt(_selectedIndex))),
+      body: SafeArea(child: Center(child: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ))),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         selectedFontSize: 20,
