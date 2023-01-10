@@ -24,6 +24,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   late List<Post> _posts;
   final int _nextPageTrigger = 3;
   late int _lastloadindex;
+  late int _day;
 
   @override
   void initState() {
@@ -34,17 +35,17 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
     _loading = true;
     _error = false;
     _lastloadindex = 0;
+    _day = 0;
     fetchData();
   }
 
   Future<void> fetchData() async {
     try {
-      // "posts/popular/user/${Constants.username}"
       Response response;
       if (widget.isGamePage) {
-        response = await get(Uri.parse("${Constants.url}posts/popular/user/${Constants.username}?offset=$_pageNumber"));
+        response = await get(Uri.parse("${Constants.url}posts/popular/user/${Constants.username}?offset=$_pageNumber&day=$_day"));
       } else {
-        response = await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber"));
+        response = await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
       }
       List responseList = json.decode(response.body);
       List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();

@@ -30,7 +30,7 @@ class _GameInfoState extends State<GameInfo> {
 
   Future<void> fetchFullGame() async {
     String gameName = Uri.encodeComponent(widget.game.Name);
-    final response = await http.get(Uri.parse('${Constants.url}games/$gameName'));
+    final response = await http.get(Uri.parse('${Constants.url}games/$gameName/'));
     if (response.statusCode == 200) {
       FullGame g = FullGame.fromJson(jsonDecode(response.body));
       setState(() {
@@ -44,7 +44,7 @@ class _GameInfoState extends State<GameInfo> {
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     final response = await http.post(
-      Uri.parse('${Constants.url}users/${Constants.username}/games'),
+      Uri.parse('${Constants.url}users/${Constants.username}/games/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -66,7 +66,7 @@ class _GameInfoState extends State<GameInfo> {
 
   Future<void> showIfLiked() async {
     final response = await get(
-        Uri.parse("${Constants.url}users/${Constants.username}/games/${widget.game.Name}"));
+        Uri.parse("${Constants.url}users/${Constants.username}/games/${widget.game.Name}/"));
     if (response.statusCode == 200) {
       setState(() {
         isFavorite = true;
