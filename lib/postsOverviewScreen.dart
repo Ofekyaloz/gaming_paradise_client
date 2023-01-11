@@ -7,9 +7,10 @@ import 'entities/Post.dart';
 import 'utils.dart';
 
 class PostsOverviewScreen extends StatefulWidget {
-  PostsOverviewScreen(this.isGamePage, {super.key});
+  PostsOverviewScreen(this.isGamePage, this.gameId, {super.key});
 
   bool isGamePage;
+  int gameId;
 
   @override
   _PostsOverviewScreenState createState() => _PostsOverviewScreenState();
@@ -20,10 +21,11 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   late int _pageNumber;
   late bool _error;
   late bool _loading;
+  late bool userPost;
   final int _numberOfPostsPerRequest = 10;
   late List<Post> _posts;
   final int _nextPageTrigger = 3;
-  late int _lastloadindex;
+  late int _lastLoadIndex;
   late int _day;
 
   @override
@@ -34,19 +36,38 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
     _isLastPage = false;
     _loading = true;
     _error = false;
-    _lastloadindex = 0;
+    _lastLoadIndex = 0;
     _day = 0;
+    userPost = !widget.isGamePage;
     fetchData();
   }
 
   Future<void> fetchData() async {
-    try {
-      Response response;
-      if (widget.isGamePage) {
-        response = await get(Uri.parse("${Constants.url}posts/popular/user/${Constants.username}?offset=$_pageNumber&day=$_day"));
+    if (_day == 14) {
+      if (userPost) {
+        setState(() {
+          userPost = !userPost;
+        });
       } else {
-        response = await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
+        // setState(() {
+        //   _loading = false;
+        // });
+        return;
       }
+    }
+    Response response;
+    if (widget.isGamePage) {
+      response = await get(Uri.parse(
+          "${Constants.url}posts/popular/game/${widget.gameId}?offset=$_pageNumber&day=$_day"));
+    } else if (userPost) {
+      response = await get(Uri.parse(
+          "${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber&day=$_day"));
+    } else {
+      response =
+          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
+    }
+
+    if (response.statusCode == 200) {
       List responseList = json.decode(response.body);
       List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();
 
@@ -56,11 +77,25 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         _pageNumber = _pageNumber + 1;
         _posts.addAll(postList);
       });
-    } catch (e) {
+    } else if (response.statusCode == 204) {
+      if (userPost) {
+        setState(() {
+          userPost = !userPost;
+          _day = 0;
+          _pageNumber = 0;
+        });
+      } else {
+        setState(() {
+          _day += 1;
+          _pageNumber = 0;
+        });
+      }
+      fetchData();
+    } else {
       setState(() {
         _loading = false;
         _error = true;
-        _lastloadindex = _lastloadindex - 1;
+        _lastLoadIndex = _lastLoadIndex - 1;
       });
     }
   }
@@ -120,7 +155,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
           return Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _pageNumber = 0;
-              _lastloadindex = 0;
+              _lastLoadIndex = 0;
               _loading = true;
               _posts = [];
               fetchData();
@@ -132,11 +167,11 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
             itemBuilder: (context, index) {
               if (index == _posts.length - _nextPageTrigger &&
                   !_loading &&
-                  index != _lastloadindex) {
+                  index != _lastLoadIndex) {
                 fetchData();
                 setState(() {
                   _loading = true;
-                  _lastloadindex = index;
+                  _lastLoadIndex = index;
                 });
               }
               if (index == _posts.length) {

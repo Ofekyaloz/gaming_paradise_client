@@ -5,5 +5,6 @@ class Constants {
       kIsWeb ? 'http://localhost:8000/api/' : 'http://10.0.2.2:8000/api/';
 
   static String? username;
+  static String? userid;
 
 }

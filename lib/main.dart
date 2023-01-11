@@ -1,30 +1,13 @@
 import 'dart:convert';
-import 'package:comment_box/comment/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'mainPage.dart';
-import 'gameOverviewScreen.dart';
 import 'signup.dart';
 import 'new_post.dart';
-import 'entities/User.dart';
-import 'postPage.dart';
 import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
 
-// Future<Game> fetchGames() async {
-//   final response = await http.get(Uri.parse('http://localhost:8000/api/games'));
-//
-//   if (response.statusCode == 200) {
-//     // If the server did return a 200 OK response,
-//     // then parse the JSON.
-//     return Game.fromJson(jsonDecode(response.body));
-//   } else {
-//     // If the server did not return a 200 OK response,
-//     // then throw an exception.
-//     throw Exception('Failed to load Game');
-//   }
-// }
 
 Future<Post> fetechPost() async {
   final response =
@@ -54,31 +37,7 @@ class _MyAppState extends State<MyApp> {
   String _name = '', _pass = '';
   String? error;
 
-  // late Future<Game> futureGame;
   late Future<Post> futruePost;
-  // late Post post;
-
-  @override
-  void initState() {
-    super.initState();
-    // futureGame = fetchGames();
-    // futruePost = fetechPost();
-    // futruePost.then((result) => {
-    //       setState(() {
-    //         post = Post(result.Id, result.UserName, result.Title,
-    //             result.GameName, result.TimestampCreated, result.Content);
-    //       })
-    //     });
-  }
-
-  List<User> users = <User>[User("ofek", "123")];
-
-  Post post = Post(1,
-      "Ofek Yaloz",
-      "The best game I have played so far",
-      "Bakushou!! All Yoshimoto Quiz-Ou Ketteisen",
-      "1/1/2020",
-      "The turn-based Strategy/RPG developed by a team called Shin's Deko was another of the Korean 3Ddddddddddddddddd exc... The turn-based Strategy/RPG developed by a team called Shin's Deko was another of the Korean 3DO exc...");
 
   @override
   void dispose() {
@@ -107,6 +66,7 @@ class _MyAppState extends State<MyApp> {
     if (response.statusCode == 200) {
       if (!mounted) return;
       Constants.username = usernameController.text;
+      Constants.userid = json.decode(response.body);
       usernameController.clear();
       passwordController.clear();
       setState(() {
@@ -296,24 +256,24 @@ class _MyAppState extends State<MyApp> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      NewPost("The Sims 3")),
-                            );
-                          },
-                          child:
-                          // const Text('Forgot Password'),
-                          const Text('new post'),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     TextButton(
+                    //       onPressed: () {
+                    //         Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) =>
+                    //                   NewPost("The Sims 3")),
+                    //         );
+                    //       },
+                    //       child:
+                    //       const Text('Forgot Password'),
+                    //       // const Text('new post'),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(
                       height: 10,
                     ),

@@ -1,4 +1,5 @@
 class FullGame {
+  int ID;
   String Name;
   int? ReleaseYear;
   String? Developer;
@@ -9,7 +10,7 @@ class FullGame {
   late List<String> Genres;
   late List<String> Platforms;
 
-  FullGame(this.Name, this.ReleaseYear, this.Developer, this.Publisher, this.MaxPlayers, this.ESRB, this.OverView, Genres, Platforms) {
+  FullGame(this.ID, this.Name, this.ReleaseYear, this.Developer, this.Publisher, this.MaxPlayers, this.ESRB, this.OverView, Genres, Platforms) {
     this.Platforms = [];
     this.Platforms.addAll(List.castFrom(Platforms));
 
@@ -20,7 +21,7 @@ class FullGame {
   }
 
   factory FullGame.fromJson(Map<String, dynamic> json) {
-    return FullGame(json['Name'], json['ReleaseYear'], json['Developer'],
+    return FullGame(json['id'], json['Name'], json['ReleaseYear'], json['Developer'],
         json['Publisher'], json['MaxPlayers'], json['ESRB'], json['OverView'],  json['Genres'], json['Platforms']);
   }
 }

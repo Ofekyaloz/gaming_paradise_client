@@ -6,12 +6,12 @@ class Post {
   String GameName;
   String Content;
 
-  Post(this.Id, this.UserName, this.Title, this.GameName, this.TimestampCreated,
-      this.Content);
+  Post(this.Id, this.TimestampCreated, this.Content, this.Title, this.GameName, this.UserName
+      );
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(json['Id'], json['UserName'], json['Title'],
-        json['GameName'], json['TimestampCreated'], json['Content']);
+    return Post(json['id'], json['TimestampCreated'],  json['Content'], json['Title'], json['GameName'], json['UserName'],
+        );
   }
 
   setContext(String str) {

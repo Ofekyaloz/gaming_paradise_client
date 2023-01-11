@@ -28,9 +28,6 @@ class _postPageState extends State<postPage> {
   bool _isEditMode = false;
   String text = "";
   String? error;
-
-  // late Future<String> numOfComments;
-  // late Future<String> likes;
   late List<Comment> commentList;
   late bool liked;
 
@@ -91,6 +88,7 @@ class _postPageState extends State<postPage> {
       });
       throw Exception('Failed to delete.');
     } else {
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -114,7 +112,7 @@ class _postPageState extends State<postPage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-          <String, String>{'Title': title, 'Content': content, 'UserName': Constants.username!}),
+          <String, String>{'Title': title, 'Content': content, 'User_id': Constants.userid!}),
     );
 
     if (response.statusCode == 200) {
@@ -141,7 +139,7 @@ class _postPageState extends State<postPage> {
       body: jsonEncode(<String, String>{
         'PostId': widget.post.Id.toString(),
         'Content': commentController.text,
-        'UserName': Constants.username.toString(),
+        'User_id': Constants.userid.toString(),
       }),
     );
 
@@ -363,8 +361,8 @@ class _postPageState extends State<postPage> {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(comment.Content),
-              // trailing:
-              // Text(comment.Da, style: const TextStyle(fontSize: 10)),
+              trailing:
+              Text(comment.TimestampCreated, style: const TextStyle(fontSize: 10)),
             ),
           );
         },
@@ -374,7 +372,7 @@ class _postPageState extends State<postPage> {
 
   Future<void> showIfLiked() async {
     final response =
-        await get(Uri.parse("${Constants.url}posts/${widget.post.Id}/likes/${Constants.username}"));
+        await get(Uri.parse("${Constants.url}posts/${widget.post.Id}/likes/${Constants.userid}"));
     if (response.statusCode == 200) {
       setState(() {
         liked = true;
@@ -395,7 +393,7 @@ class _postPageState extends State<postPage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'UserName': Constants.username.toString(),
+        'User_id': Constants.userid.toString(),
       }),
     );
     if (response.statusCode == 200) {

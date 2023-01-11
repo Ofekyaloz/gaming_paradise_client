@@ -19,7 +19,7 @@ class _mainPageState extends State<mainPage> {
   }
 
   static final List<Widget> _pages = <Widget>[
-    PostsOverviewScreen(false),
+    PostsOverviewScreen(false, -1),
 
     GamesOverviewScreen(),
 

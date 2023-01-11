@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gaming_social_network/utils.dart';
 import 'gameInfo.dart';
 import 'postsOverviewScreen.dart';
 import 'entities/Game.dart';
@@ -31,7 +30,8 @@ class _gamePageState extends State<gamePage> {
 
     _pages = <Widget>[
       GameInfo(widget.game),
-      PostsOverviewScreen(true),
+      PostsOverviewScreen(true, widget.game.ID),
+      Icon(Icons.comment)
     ];
   }
 
@@ -60,7 +60,7 @@ class _gamePageState extends State<gamePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NewPost(widget.game.Name)),
+            MaterialPageRoute(builder: (context) => NewPost(widget.game.ID.toString())),
           );
         },
         backgroundColor: Colors.green,
@@ -92,6 +92,10 @@ class _gamePageState extends State<gamePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.local_fire_department_rounded),
             label: 'Posts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.comment),
+            label: 'Reviews',
           ),
         ],
       ),

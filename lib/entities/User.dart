@@ -1,10 +1,7 @@
 class User {
+  int ID;
   String UserName;
   String Password;
 
-  User(this.UserName, this.Password);
-
-  setName(String name) {
-    UserName = name;
-  }
+  User(this.ID, this.UserName, this.Password);
 }

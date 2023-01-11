@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class NewPost extends StatefulWidget {
-  NewPost(this.gamename, {super.key});
-  String gamename;
+  NewPost(this.gameId, {super.key});
+  String gameId;
 
   @override
   State<NewPost> createState() => _NewPostState();
@@ -36,9 +36,9 @@ class _NewPostState extends State<NewPost> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'UserName': Constants.username!,
+          'UserId': Constants.userid!,
           'Title' : titleController.text,
-          'GameName': widget.gamename,
+          'GameId': widget.gameId,
           'Content': contentController.text,
         }),
       );
