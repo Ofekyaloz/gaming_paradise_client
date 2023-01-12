@@ -49,9 +49,10 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
           userPost = !userPost;
         });
       } else {
-        // setState(() {
-        //   _loading = false;
-        // });
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
         return;
       }
     }

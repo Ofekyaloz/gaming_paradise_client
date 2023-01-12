@@ -86,7 +86,7 @@ class _GameInfoState extends State<GameInfo> {
             child: Container(
                 width: double.infinity,
                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  isFavorite ? const Text("This game in Favorites!") : const Text("Click here to save this game in favorites!"),
+                  isFavorite ? const Text("This game is in Favorites!") : const Text("Click here to save this game in favorites!"),
                   LikeButton(
                     isLiked: isFavorite,
                     circleColor: const CircleColor(
