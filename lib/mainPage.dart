@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gaming_social_network/postsOverviewScreen.dart';
-import 'signup.dart';
+import 'signupPage.dart';
 import 'gameOverviewScreen.dart';
 
 class mainPage extends StatefulWidget {

@@ -1,6 +1,6 @@
 class Review {
   int id;
-  String UserName;
+  String? UserName;
   String Content;
   String TimestampCreated;
 

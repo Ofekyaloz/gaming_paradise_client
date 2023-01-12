@@ -16,8 +16,8 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
   late int _pageNumber;
   late bool _error;
   late bool _loading;
-  final int _numberOfPostsPerRequest = 10;
-  late List<Game> _posts;
+  final int _numberOfGamesPerRequest = 10;
+  late List<Game> _games;
   final int _nextPageTrigger = 3;
   late int _lastloadindex;
 
@@ -25,7 +25,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
   void initState() {
     super.initState();
     _pageNumber = 0;
-    _posts = [];
+    _games = [];
     _isLastPage = false;
     _loading = true;
     _error = false;
@@ -43,10 +43,10 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
           responseList.map((data) => Game.fromJson(data)).toList();
 
       setState(() {
-        _isLastPage = postList.length < _numberOfPostsPerRequest;
+        _isLastPage = postList.length < _numberOfGamesPerRequest;
         _loading = false;
         _pageNumber = _pageNumber + 1;
-        _posts.addAll(postList);
+        _games.addAll(postList);
       });
     } catch (e) {
       print("error --> $e");
@@ -66,7 +66,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'An error occurred when fetching the posts.',
+            'An error occurred when fetching the games.',
             style: TextStyle(
                 fontSize: size,
                 fontWeight: FontWeight.w500,
@@ -100,7 +100,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
   }
 
   Widget buildPostsView() {
-    if (_posts.isEmpty) {
+    if (_games.isEmpty) {
       if (_loading) {
         return const Center(
             child: Padding(
@@ -112,16 +112,16 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
       }
     }
     return ListView.builder(
-        itemCount: _posts.length + (_isLastPage ? 0 : 1),
+        itemCount: _games.length + (_isLastPage ? 0 : 1),
         itemBuilder: (context, index) {
-          if (index == _posts.length - _nextPageTrigger && !_loading && index != _lastloadindex) {
+          if (index == _games.length - _nextPageTrigger && !_loading && index != _lastloadindex) {
             fetchData();
             setState(() {
               _loading = true;
               _lastloadindex = index;
             });
           }
-          if (index == _posts.length) {
+          if (index == _games.length) {
             if (_error) {
               return Center(child: errorDialog(size: 15));
             } else {
@@ -132,7 +132,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
               ));
             }
           }
-          final Game game = _posts[index];
+          final Game game = _games[index];
           return GestureDetector(
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => gamePage(game))),
             child: Padding(

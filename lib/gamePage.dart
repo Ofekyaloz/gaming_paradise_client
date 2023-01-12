@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'gameInfo.dart';
 import 'postsOverviewScreen.dart';
 import 'entities/Game.dart';
-import 'new_post.dart';
+import 'newPostPage.dart';
+import 'gameReviews.dart';
 
 class gamePage extends StatefulWidget {
   gamePage(this.game, {super.key});
@@ -31,7 +32,7 @@ class _gamePageState extends State<gamePage> {
     _pages = <Widget>[
       GameInfo(widget.game),
       PostsOverviewScreen(true, widget.game.ID),
-      Icon(Icons.comment)
+      gameReviews(widget.game.ID)
     ];
   }
 

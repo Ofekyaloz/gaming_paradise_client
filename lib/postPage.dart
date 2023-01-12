@@ -94,7 +94,7 @@ class _postPageState extends State<postPage> {
   }
 
   updatePost() async {
-    if (title.isNotEmpty && title.length > 5) {
+    if (title.isNotEmpty && title.length > 3) {
       widget.post.setTitle(title);
     } else {
       error = "Title can not be empty!";
@@ -285,9 +285,9 @@ class _postPageState extends State<postPage> {
       minWidth: 90,
       height: 60,
       onPressed: () {
-        title = widget.post.Title;
-        content = widget.post.Content;
         setState(() {
+          title = widget.post.Title;
+          content = widget.post.Content;
           _isEditMode = !_isEditMode;
         });
       },

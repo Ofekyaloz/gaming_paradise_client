@@ -26,6 +26,7 @@ class _GameInfoState extends State<GameInfo> {
     platforms = [];
     genres = [];
     fetchFullGame();
+    showIfLiked();
   }
 
   Future<void> fetchFullGame() async {
@@ -43,12 +44,12 @@ class _GameInfoState extends State<GameInfo> {
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     final response = await http.post(
-      Uri.parse('${Constants.url}users/${Constants.username}/games/'),
+      Uri.parse('${Constants.url}users/${Constants.userid}/games/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'GameName': widget.game.Name,
+        'Game_id': widget.game.ID.toString(),
       }),
     );
     if (response.statusCode == 200) {
