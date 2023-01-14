@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../entities/Game.dart';
+import '../utils.dart';
 import 'gamePage.dart';
 import 'package:http/http.dart';
 import 'gameItem.dart';
-import 'entities/Game.dart';
-import 'utils.dart';
+
 
 class GamesOverviewScreen extends StatefulWidget {
   @override
@@ -49,11 +50,10 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
         _games.addAll(postList);
       });
     } catch (e) {
-      print("error --> $e");
       setState(() {
         _loading = false;
         _error = true;
-        _lastloadindex = _lastloadindex - 1;
+        _lastloadindex = _pageNumber - 1;
       });
     }
   }

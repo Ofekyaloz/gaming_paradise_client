@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'mainPage.dart';
 import 'signupPage.dart';
-import 'newPostPage.dart';
 import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
@@ -65,14 +64,15 @@ class _MyAppState extends State<MyApp> {
 
     if (response.statusCode == 200) {
       if (!mounted) return;
-      Constants.username = usernameController.text;
-      Constants.userid = json.decode(response.body);
-      usernameController.clear();
-      passwordController.clear();
+
       setState(() {
         _pass = '';
         _name = '';
+        Constants.username = usernameController.text;
+        Constants.userid = json.decode(response.body);
       });
+      usernameController.clear();
+      passwordController.clear();
       Navigator.push(
         context,
         MaterialPageRoute(

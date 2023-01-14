@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:like_button/like_button.dart';
-import 'entities/Post.dart';
+import '../entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'utils.dart';
-import 'entities/Comment.dart';
+import '../utils.dart';
+import '../entities/Comment.dart';
 
 class postPage extends StatefulWidget {
   postPage(this.post, {super.key});
@@ -329,14 +329,16 @@ class _postPageState extends State<postPage> {
       return const SizedBox();
     }
     return Container(
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: commentList.length,
+        separatorBuilder: (context, index) {
+          return const Divider(thickness: 1,);
+        },
         itemBuilder: (context, index) {
           final Comment comment = commentList[index];
-          // return Text(comment.Content);
           return Padding(
             padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
             child: ListTile(
@@ -362,7 +364,7 @@ class _postPageState extends State<postPage> {
               ),
               subtitle: Text(comment.Content),
               trailing:
-              Text(comment.TimestampCreated, style: const TextStyle(fontSize: 10)),
+              Text(comment.TimestampCreated, style: const TextStyle(fontSize: 12)),
             ),
           );
         },
@@ -590,7 +592,12 @@ class _postPageState extends State<postPage> {
 
                   const SizedBox(height: 10),
 
-                  showComments(),
+                  InputDecorator(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      child: showComments()
+                  ),
 
                   const SizedBox(height: 10),
                 ],

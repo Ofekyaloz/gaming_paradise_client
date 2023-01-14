@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'entities/Review.dart';
+import '../entities/Review.dart';
 
 class ReviewPage extends StatefulWidget {
   ReviewPage(this.review, {super.key});

@@ -1,57 +1,109 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:gaming_social_network/reviewItem.dart';
-import 'entities/Review.dart';
+import 'package:gaming_social_network/post/popularPostItem.dart';
+import '/post/postPage.dart';
+import '../entities/Post.dart';
+import '../utils.dart';
 import 'postItem.dart';
 import 'package:http/http.dart';
-import 'utils.dart';
-import 'ReviewPage.dart';
 
-class gameReviews extends StatefulWidget {
-  gameReviews(this.gameId, {super.key});
+class PostsOverviewScreen extends StatefulWidget {
+  PostsOverviewScreen(this.isGamePage, this.gameId, {super.key});
 
+  bool isGamePage;
   int gameId;
 
   @override
-  _gameReviewsState createState() => _gameReviewsState();
+  _PostsOverviewScreenState createState() => _PostsOverviewScreenState();
 }
 
-class _gameReviewsState extends State<gameReviews> {
+class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   late bool _isLastPage;
   late int _pageNumber;
   late bool _error;
   late bool _loading;
-  final int _numberOfReviewsPerRequest = 10;
-  late List<Review> _reviews;
+  late bool userPost;
+  final int _numberOfPostsPerRequest = 10;
+  late List<Post> _posts;
   final int _nextPageTrigger = 3;
   late int _lastLoadIndex;
+  late int _day;
+  late int _numOfPopular;
 
   @override
   void initState() {
     super.initState();
     _pageNumber = 0;
-    _reviews = [];
+    _posts = [];
     _isLastPage = false;
     _loading = true;
     _error = false;
     _lastLoadIndex = 0;
-    fetchData();
+    _day = 0;
+    userPost = !widget.isGamePage;
+    _numOfPopular = 100;
   }
 
   Future<void> fetchData() async {
-    Response response = await get(Uri.parse(
-        "${Constants.url}games/${widget.gameId}/reviews?offset=$_pageNumber"));
+    if (_day >= 14) {
+      if (userPost) {
+        setState(() {
+          userPost = !userPost;
+          _day = 0;
+          _numOfPopular = _posts.length;
+          _loading = true;
+        });
+        Future.delayed(Duration(seconds: 2), () {
+          fetchData();
+        });
+      } else {
+        setState(() {
+          _loading = false;
+          _error = false;
+        });
+      }
+      return;
+    }
+
+    Response response;
+    if (widget.isGamePage) {
+      response = await get(Uri.parse(
+          "${Constants.url}posts/popular/game/${widget.gameId}?offset=$_pageNumber&day=$_day"));
+    } else if (userPost) {
+      response = await get(Uri.parse(
+          "${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber&day=$_day"));
+    } else {
+      response =
+      await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
+    }
 
     if (response.statusCode == 200) {
       List responseList = json.decode(response.body);
-      List<Review> postList = responseList.map((data) => Review.fromJson(data)).toList();
+      List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();
 
       setState(() {
-        _isLastPage = postList.length < _numberOfReviewsPerRequest;
-        _loading = false;
+        _isLastPage = postList.length < _numberOfPostsPerRequest;
+        // _loading = false;
         _pageNumber = _pageNumber + 1;
-        _reviews.addAll(postList);
+        _posts.addAll(postList);
       });
+
+      if (_isLastPage) {
+        setState(() {
+          _pageNumber = 0;
+          _day += 1;
+        });
+
+        fetchData();
+        return;
+      }
+    } else if (response.statusCode == 204) {
+      setState(() {
+        _day += 1;
+        _pageNumber = 0;
+      });
+      fetchData();
+      return;
     } else {
       setState(() {
         _loading = false;
@@ -60,6 +112,8 @@ class _gameReviewsState extends State<gameReviews> {
       });
     }
   }
+
+
 
   Widget errorDialog({required double size}) {
     return SizedBox(
@@ -94,13 +148,17 @@ class _gameReviewsState extends State<gameReviews> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(seconds: 1), () {
+      fetchData();
+    });
+
     return Scaffold(
       body: buildPostsView(),
     );
   }
 
   Widget buildPostsView() {
-    if (_reviews.isEmpty) {
+    if (_posts.isEmpty) {
       if (_loading) {
         return const Center(
             child: Padding(
@@ -115,18 +173,21 @@ class _gameReviewsState extends State<gameReviews> {
         onRefresh: () {
           return Future.delayed(const Duration(seconds: 2), () {
             setState(() {
+              _posts = [];
               _pageNumber = 0;
               _lastLoadIndex = 0;
+              _day = 0;
+              userPost = !widget.isGamePage;
               _loading = true;
-              _reviews = [];
-              fetchData();
+              _isLastPage = false;
             });
+            fetchData();
           });
         },
         child: ListView.builder(
-            itemCount: _reviews.length + (_isLastPage ? 0 : 1),
+            itemCount: _posts.length + (_isLastPage ? 0 : 1),
             itemBuilder: (context, index) {
-              if (index == _reviews.length - _nextPageTrigger &&
+              if (index == _posts.length - _nextPageTrigger &&
                   !_loading &&
                   index != _lastLoadIndex) {
                 fetchData();
@@ -135,7 +196,7 @@ class _gameReviewsState extends State<gameReviews> {
                   _lastLoadIndex = index;
                 });
               }
-              if (index == _reviews.length) {
+              if (index == _posts.length) {
                 if (_error) {
                   return Center(child: errorDialog(size: 15));
                 } else {
@@ -146,13 +207,13 @@ class _gameReviewsState extends State<gameReviews> {
                       ));
                 }
               }
-              final Review review = _reviews[index];
+              final Post post = _posts[index];
               return GestureDetector(
                   onTap: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => ReviewPage(review))),
+                      context, MaterialPageRoute(builder: (context) => postPage(post))),
                   child: Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: ReviewItem(review.UserName, review.Content)));
+                      child: index < _numOfPopular ? PopularPostItem(post.Title, post.Content) : PostItem(post.Title, post.Content)));
             }));
   }
 }

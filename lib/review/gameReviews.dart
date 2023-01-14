@@ -1,102 +1,61 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:gaming_social_network/postPage.dart';
-import 'postItem.dart';
+import 'reviewItem.dart';
+import '../entities/Review.dart';
 import 'package:http/http.dart';
-import 'entities/Post.dart';
-import 'utils.dart';
+import '../utils.dart';
+import 'ReviewPage.dart';
 
-class PostsOverviewScreen extends StatefulWidget {
-  PostsOverviewScreen(this.isGamePage, this.gameId, {super.key});
+class gameReviews extends StatefulWidget {
+  gameReviews(this.gameId, {super.key});
 
-  bool isGamePage;
   int gameId;
 
   @override
-  _PostsOverviewScreenState createState() => _PostsOverviewScreenState();
+  _gameReviewsState createState() => _gameReviewsState();
 }
 
-class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
+class _gameReviewsState extends State<gameReviews> {
   late bool _isLastPage;
   late int _pageNumber;
   late bool _error;
   late bool _loading;
-  late bool userPost;
-  final int _numberOfPostsPerRequest = 10;
-  late List<Post> _posts;
+  final int _numberOfReviewsPerRequest = 10;
+  late List<Review> _reviews;
   final int _nextPageTrigger = 3;
   late int _lastLoadIndex;
-  late int _day;
 
   @override
   void initState() {
     super.initState();
     _pageNumber = 0;
-    _posts = [];
+    _reviews = [];
     _isLastPage = false;
     _loading = true;
     _error = false;
     _lastLoadIndex = 0;
-    _day = 0;
-    userPost = !widget.isGamePage;
     fetchData();
   }
 
   Future<void> fetchData() async {
-    if (_day == 14) {
-      if (userPost) {
-        setState(() {
-          userPost = !userPost;
-        });
-      } else {
-        setState(() {
-          _loading = false;
-          _error = true;
-        });
-        return;
-      }
-    }
-    Response response;
-    if (widget.isGamePage) {
-      response = await get(Uri.parse(
-          "${Constants.url}posts/popular/game/${widget.gameId}?offset=$_pageNumber&day=$_day"));
-    } else if (userPost) {
-      response = await get(Uri.parse(
-          "${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber&day=$_day"));
-    } else {
-      response =
-          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
-    }
+    Response response = await get(Uri.parse(
+        "${Constants.url}games/${widget.gameId}/reviews?offset=$_pageNumber"));
 
     if (response.statusCode == 200) {
       List responseList = json.decode(response.body);
-      List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();
+      List<Review> postList = responseList.map((data) => Review.fromJson(data)).toList();
 
       setState(() {
-        _isLastPage = postList.length < _numberOfPostsPerRequest;
+        _isLastPage = postList.length < _numberOfReviewsPerRequest;
         _loading = false;
         _pageNumber = _pageNumber + 1;
-        _posts.addAll(postList);
+        _reviews.addAll(postList);
       });
-    } else if (response.statusCode == 204) {
-      if (userPost) {
-        setState(() {
-          userPost = !userPost;
-          _day = 0;
-          _pageNumber = 0;
-        });
-      } else {
-        setState(() {
-          _day += 1;
-          _pageNumber = 0;
-        });
-      }
-      fetchData();
     } else {
       setState(() {
         _loading = false;
-        _error = true;
-        _lastLoadIndex = _lastLoadIndex - 1;
+        _error = false;
+        _lastLoadIndex = _pageNumber;
       });
     }
   }
@@ -140,13 +99,13 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   }
 
   Widget buildPostsView() {
-    if (_posts.isEmpty) {
+    if (_reviews.isEmpty) {
       if (_loading) {
         return const Center(
             child: Padding(
-          padding: EdgeInsets.all(8),
-          child: CircularProgressIndicator(),
-        ));
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ));
       } else if (_error) {
         return Center(child: errorDialog(size: 20));
       }
@@ -158,15 +117,15 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
               _pageNumber = 0;
               _lastLoadIndex = 0;
               _loading = true;
-              _posts = [];
+              _reviews = [];
               fetchData();
             });
           });
         },
         child: ListView.builder(
-            itemCount: _posts.length + (_isLastPage ? 0 : 1),
+            itemCount: _reviews.length + (_isLastPage ? 0 : 1),
             itemBuilder: (context, index) {
-              if (index == _posts.length - _nextPageTrigger &&
+              if (index == _reviews.length - _nextPageTrigger &&
                   !_loading &&
                   index != _lastLoadIndex) {
                 fetchData();
@@ -175,24 +134,24 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
                   _lastLoadIndex = index;
                 });
               }
-              if (index == _posts.length) {
+              if (index == _reviews.length) {
                 if (_error) {
                   return Center(child: errorDialog(size: 15));
                 } else {
                   return const Center(
                       child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: CircularProgressIndicator(),
-                  ));
+                        padding: EdgeInsets.all(8),
+                        child: CircularProgressIndicator(),
+                      ));
                 }
               }
-              final Post post = _posts[index];
+              final Review review = _reviews[index];
               return GestureDetector(
                   onTap: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => postPage(post))),
+                      context, MaterialPageRoute(builder: (context) => ReviewPage(review))),
                   child: Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: PostItem(post.Title, post.Content)));
+                      child: ReviewItem(review.UserName, review.Content)));
             }));
   }
 }

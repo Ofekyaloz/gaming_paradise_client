@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gaming_social_network/postsOverviewScreen.dart';
-import 'signupPage.dart';
-import 'gameOverviewScreen.dart';
+import 'package:gaming_social_network/search.dart';
+import 'package:gaming_social_network/utils.dart';
+import 'post/postsOverviewScreen.dart';
+import 'game/gameOverviewScreen.dart';
+import 'profilePage.dart';
 
 class mainPage extends StatefulWidget {
   @override
@@ -23,7 +25,9 @@ class _mainPageState extends State<mainPage> {
 
     GamesOverviewScreen(),
 
-    SignupPage(),
+    Search(),
+
+    ProfilePage(Constants.userid.toString(), Constants.username!),
   ];
 
   @override
@@ -78,8 +82,13 @@ class _mainPageState extends State<mainPage> {
             icon: Icon(Icons.search_sharp),
             label: 'Search',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );
   }
+
 }

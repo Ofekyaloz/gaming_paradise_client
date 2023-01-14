@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'gamePage.dart';
+import 'game/gamePage.dart';
 import 'package:http/http.dart';
-import 'gameItem.dart';
+import 'game/gameItem.dart';
 import 'entities/Game.dart';
 import 'utils.dart';
 

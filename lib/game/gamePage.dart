@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../entities/Game.dart';
+import '../post/newPostPage.dart';
+import '../post/postsOverviewScreen.dart';
 import 'gameInfo.dart';
-import 'postsOverviewScreen.dart';
-import 'entities/Game.dart';
-import 'newPostPage.dart';
-import 'gameReviews.dart';
+import '../review/gameReviews.dart';
 
 class gamePage extends StatefulWidget {
   gamePage(this.game, {super.key});

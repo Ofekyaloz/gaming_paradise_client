@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:like_button/like_button.dart';
-import 'utils.dart';
-import 'entities/FullGame.dart';
-import 'entities/Game.dart';
+import '../utils.dart';
+import '../entities/FullGame.dart';
+import '../entities/Game.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
