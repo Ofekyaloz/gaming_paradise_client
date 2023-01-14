@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'search.dart';
 import 'mainPage.dart';
 import 'signupPage.dart';
 import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
 
-
 Future<Post> fetechPost() async {
-  final response =
-  await http.get(Uri.parse('${Constants.url}posts/1/'));
+  final response = await http.get(Uri.parse('${Constants.url}posts/1/'));
   if (response.statusCode == 200) {
     return Post.fromJson(jsonDecode(response.body));
   } else {
@@ -76,8 +75,8 @@ class _MyAppState extends State<MyApp> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          // builder: (context) => SignupPage(users)),
-          // builder: (context) => postPage(post, true)),
+            // builder: (context) => SignupPage(users)),
+            // builder: (context) => postPage(post, true)),
             builder: (context) => mainPage()),
       );
       return;
@@ -256,24 +255,21 @@ class _MyAppState extends State<MyApp> {
                     const SizedBox(
                       height: 10,
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     TextButton(
-                    //       onPressed: () {
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //               builder: (context) =>
-                    //                   NewPost("The Sims 3")),
-                    //         );
-                    //       },
-                    //       child:
-                    //       const Text('Forgot Password'),
-                    //       // const Text('new post'),
-                    //     ),
-                    //   ],
-                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Search()),
+                            );
+                          },
+                          child: const Text('Forgot Password'),
+                          // const Text('new post'),
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -297,10 +293,10 @@ class _MyAppState extends State<MyApp> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SignupPage()),
-                                //   builder: (context) =>
-                                //       mainPage()),
-                                //       postPage(post)), // get post id
+                                  builder: (context) => SignupPage()),
+                              //   builder: (context) =>
+                              //       mainPage()),
+                              //       postPage(post)), // get post id
                             );
                           },
                         )
