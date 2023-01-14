@@ -21,31 +21,20 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   String _selectedOption = 'Search by game name';
   TextEditingController _searchController = TextEditingController();
+  List<String> genrs = [], platforms = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // fetchGeners();
+    // fetchPlatforms();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "Gaming Paradise!",
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.blue,
-            title: const Text('Search for games!'),
-            centerTitle: true,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  size: 20,
-                  color: Colors.black,
-                )),
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-          ),
-          body: SafeArea(
+    return SafeArea(
             child: SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height,
@@ -139,7 +128,6 @@ class _SearchState extends State<Search> {
                 ),
               ),
             ),
-          ),
-        ));
+          );
   }
 }

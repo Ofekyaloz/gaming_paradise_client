@@ -37,22 +37,22 @@ class _SearchGameNameState extends State<SearchGameNameScreen> {
   }
 
   Future<void> fetchData() async {
-    try {
+
       final response =
           await get(Uri.parse("${widget.url}&offset=$_pageNumber"));
 
-      List responseList = json.decode(response.body);
-      List<Game> postList =
-          responseList.map((data) => Game.fromJson(data)).toList();
+      if (response.statusCode == 200) {
+        List responseList = json.decode(response.body);
+        List<Game> postList =
+        responseList.map((data) => Game.fromJson(data)).toList();
 
-      setState(() {
-        _isLastPage = postList.length < _numberOfPostsPerRequest;
-        _loading = false;
-        _pageNumber = _pageNumber + 1;
-        _games.addAll(postList);
-      });
-    } catch (e) {
-      print("error --> $e");
+        setState(() {
+          _isLastPage = postList.length < _numberOfPostsPerRequest;
+          _loading = false;
+          _pageNumber = _pageNumber + 1;
+          _games.addAll(postList);
+        });
+      } else {
       setState(() {
         _loading = false;
         _error = true;
