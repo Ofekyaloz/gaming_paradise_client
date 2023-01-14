@@ -7,8 +7,8 @@ import 'entities/Game.dart';
 import 'utils.dart';
 
 class SearchGameNameScreen extends StatefulWidget {
-  String gameName;
-  SearchGameNameScreen(this.gameName, {super.key});
+  String url;
+  SearchGameNameScreen(this.url, {super.key});
 
   @override
   _SearchGameNameState createState() => _SearchGameNameState();
@@ -38,8 +38,8 @@ class _SearchGameNameState extends State<SearchGameNameScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await get(Uri.parse(
-          "${Constants.url}games/?game=${widget.gameName}&offset=$_pageNumber"));
+      final response =
+          await get(Uri.parse("${widget.url}&offset=$_pageNumber"));
 
       List responseList = json.decode(response.body);
       List<Game> postList =
