@@ -190,18 +190,18 @@ class _SearchState extends State<Search> {
   Future<void> fetchGenres() async {
     final response = await get(Uri.parse("${Constants.url}genres"));
     if (response.statusCode == 200) {
-      List responseList = json.decode(response.body);
+      List responseList = json.decode(response.body)['Genre'];
       List<String> postList = responseList.map((e) => e.toString()).toList();
       genres = postList;
     }
   }
 
   Future<void> fetchPlatforms() async {
-    final response = await get(Uri.parse("${Constants.url}genres"));
+    final response = await get(Uri.parse("${Constants.url}platforms"));
     if (response.statusCode == 200) {
-      List responseList = json.decode(response.body);
+      List responseList = json.decode(response.body)['Platform'];
       List<String> postList = responseList.map((e) => e.toString()).toList();
-      genres = postList;
+      platforms = postList;
     }
   }
 }
