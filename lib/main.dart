@@ -8,14 +8,6 @@ import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
 
-Future<Post> fetechPost() async {
-  final response = await http.get(Uri.parse('${Constants.url}posts/1/'));
-  if (response.statusCode == 200) {
-    return Post.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load Game');
-  }
-}
 
 void main() => runApp(const MaterialApp(home: MyApp()));
 
@@ -35,7 +27,6 @@ class _MyAppState extends State<MyApp> {
   String _name = '', _pass = '';
   String? error;
 
-  late Future<Post> futruePost;
 
   @override
   void dispose() {

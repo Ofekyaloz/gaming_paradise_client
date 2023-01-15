@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'game/gamePage.dart';
 import 'package:http/http.dart';
 import 'game/gameItem.dart';
 import 'entities/Game.dart';
-import 'utils.dart';
 
 class SearchGameNameScreen extends StatefulWidget {
   String url;
@@ -97,8 +97,28 @@ class _SearchGameNameState extends State<SearchGameNameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: buildPostsView(),
+    return MaterialApp(
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.blue,
+          title: const Text('Gaming Paradise!'),
+          centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.black,
+              )),
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
+        body: buildPostsView(),
+      ),
     );
   }
 

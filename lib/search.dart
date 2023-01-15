@@ -159,13 +159,11 @@ class _SearchState extends State<Search> {
                                 String searchText = selectedGenre;
                                 url =
                                     '${Constants.url}genres/?genre=$searchText';
-                                print(url);
                               } else if (_selectedOption ==
                                   'Search by Platform') {
                                 String searchText = selectedPlatform;
                                 url =
                                     '${Constants.url}platforms/?platform=$searchText';
-                                print(url);
                               }
                               Navigator.push(
                                 context,
