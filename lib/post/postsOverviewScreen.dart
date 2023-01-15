@@ -45,25 +45,30 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   }
 
   Future<void> fetchData() async {
-    if (_day >= 14) {
-      if (userPost) {
-        setState(() {
-          userPost = !userPost;
-          _day = 0;
-          _numOfPopular = _posts.length;
-          _loading = true;
-        });
-        Future.delayed(Duration(seconds: 2), () {
-          fetchData();
-        });
-      } else {
-        setState(() {
-          _loading = false;
-          _error = false;
-        });
-      }
-      return;
-    }
+    // if (_day >= 14) {
+    //   if (userPost) {
+    //     setState(() {
+    //       _day = 0;
+    //       userPost = !userPost;
+    //       _numOfPopular = _posts.length;
+    //       _loading = true;
+    //     });
+    //     Future.delayed(const Duration(seconds: 2), () {
+    //       fetchData();
+    //     });
+    //   } else {
+    //     setState(() {
+    //       _loading = false;
+    //       _error = false;
+    //     });
+    //     if (_posts.isEmpty) {
+    //       setState(() {
+    //         _error = true;
+    //       });
+    //     }
+    //   }
+    //   return;
+    // }
 
     Response response;
     if (widget.isGamePage) {
@@ -74,7 +79,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
           "${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber&day=$_day"));
     } else {
       response =
-      await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
+          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
     }
 
     if (response.statusCode == 200) {
@@ -85,24 +90,40 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         _isLastPage = postList.length < _numberOfPostsPerRequest;
         // _loading = false;
         _pageNumber = _pageNumber + 1;
+        _lastLoadIndex = _pageNumber;
         _posts.addAll(postList);
       });
 
-      if (_isLastPage) {
+      if (_isLastPage && userPost) {
         setState(() {
+          _numOfPopular = _posts.length;
+          _loading = true;
           _pageNumber = 0;
-          _day += 1;
-        });
+          userPost = !userPost;
 
-        fetchData();
+        });
+        Future.delayed(Duration(seconds: 3), () {fetchData();});
+
+
         return;
       }
-    } else if (response.statusCode == 204) {
-      setState(() {
-        _day += 1;
-        _pageNumber = 0;
-      });
-      fetchData();
+
+        return;
+      } else if (response.statusCode == 204) {
+      if (userPost) {
+        setState(() {
+          _numOfPopular = _posts.length;
+          _loading = true;
+          _pageNumber = 0;
+          userPost = !userPost;
+        });
+        Future.delayed(const Duration(seconds: 3), () {
+          fetchData();
+        });
+
+
+        return;
+      }
       return;
     } else {
       setState(() {
@@ -112,8 +133,6 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
       });
     }
   }
-
-
 
   Widget errorDialog({required double size}) {
     return SizedBox(
@@ -148,9 +167,10 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       fetchData();
     });
+
 
     return Scaffold(
       body: buildPostsView(),
@@ -162,9 +182,9 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
       if (_loading) {
         return const Center(
             child: Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ));
+          padding: EdgeInsets.all(8),
+          child: CircularProgressIndicator(),
+        ));
       } else if (_error) {
         return Center(child: errorDialog(size: 20));
       }
@@ -180,6 +200,8 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
               userPost = !widget.isGamePage;
               _loading = true;
               _isLastPage = false;
+              _error = false;
+              userPost = !widget.isGamePage;
             });
             fetchData();
           });
@@ -202,9 +224,9 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
                 } else {
                   return const Center(
                       child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: CircularProgressIndicator(),
-                      ));
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ));
                 }
               }
               final Post post = _posts[index];
@@ -213,7 +235,9 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
                       context, MaterialPageRoute(builder: (context) => postPage(post))),
                   child: Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: index < _numOfPopular ? PopularPostItem(post.Title, post.Content) : PostItem(post.Title, post.Content)));
+                      child: index < _numOfPopular
+                          ? PopularPostItem(post.Title, post.Content)
+                          : PostItem(post.Title, post.Content)));
             }));
   }
 }

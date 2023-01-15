@@ -57,6 +57,11 @@ class _gameReviewsState extends State<gameReviews> {
         _error = false;
         _lastLoadIndex = _pageNumber;
       });
+      if (_reviews.isEmpty) {
+        setState(() {
+          _error = true;
+        });
+      }
     }
   }
 
