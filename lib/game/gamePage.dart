@@ -8,7 +8,6 @@ import '../review/gameReviews.dart';
 
 class gamePage extends StatefulWidget {
   gamePage(this.game, {super.key});
-
   Game game;
 
   @override
@@ -29,6 +28,7 @@ class _gamePageState extends State<gamePage> {
   void initState() {
     super.initState();
 
+    // bottom bar pages
     _pages = <Widget>[
       GameInfo(widget.game),
       PostsOverviewScreen(true, widget.game.ID),
@@ -68,11 +68,14 @@ class _gamePageState extends State<gamePage> {
         child: const Icon(Icons.post_add),
       ),
       body: SafeArea(
+
+        // Shows the selected page
         child: IndexedStack(
           index: _selectedIndex,
           children: _pages,
         ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         selectedFontSize: 20,

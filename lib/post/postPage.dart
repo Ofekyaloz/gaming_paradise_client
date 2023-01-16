@@ -34,13 +34,17 @@ class _postPageState extends State<postPage> {
   @override
   initState() {
     super.initState();
-    fetchComments();
-    commentList = [];
+
+    // check if the user that connected create this psot
     editor = widget.post.UserName == Constants.username;
+
+    commentList = [];
+    fetchComments();
     liked = false;
     showIfLiked();
   }
 
+  // Fetch the number of likes of the current post
   Future<String> fetchLikes() async {
     final response = await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/likes/'));
     if (response.statusCode == 200) {
@@ -50,6 +54,7 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Fetch the number of comment of the current post
   Future<String> fetchNumOfComments() async {
     final response =
         await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/comment/amount/'));
@@ -60,6 +65,7 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Fetch the comments of the current post
   Future<void> fetchComments() async {
     try {
       final response =
@@ -67,6 +73,7 @@ class _postPageState extends State<postPage> {
       List responseList = json.decode(response.body);
       List<Comment> tmpList = responseList.map((data) => Comment.fromJson(data)).toList();
 
+      // Saves all the comments in commentList
       setState(() {
         commentList = [];
         commentList.addAll(tmpList);
@@ -76,6 +83,7 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Send to the server delete post request
   delPost() async {
     final respone = await http
         .delete(Uri.parse('${Constants.url}posts/${widget.post.Id}/'), headers: <String, String>{
@@ -87,13 +95,17 @@ class _postPageState extends State<postPage> {
         error = "Failed to delete.";
       });
       throw Exception('Failed to delete.');
+
+      // if succeed, return to the last page
     } else {
       if (!mounted) return;
       Navigator.pop(context);
     }
   }
 
+  // Send to the server update post request with the new content
   updatePost() async {
+    // Validations
     if (title.isNotEmpty && title.length > 3) {
       widget.post.setTitle(title);
     } else {
@@ -106,6 +118,8 @@ class _postPageState extends State<postPage> {
       error = "Content can not be empty!";
       return;
     }
+
+    // Sending the request
     final response = await http.put(
       Uri.parse('${Constants.url}posts/${widget.post.Id}/'),
       headers: <String, String>{
@@ -118,6 +132,8 @@ class _postPageState extends State<postPage> {
     if (response.statusCode == 200) {
       if (!mounted) return;
       return;
+
+      // if failed to edit return an error
     } else {
       setState(() {
         error = "Failed to edit.";
@@ -126,7 +142,9 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Send to the server a new comment to the current post.
   sendComment() async {
+    // if content not valid return
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -143,6 +161,7 @@ class _postPageState extends State<postPage> {
       }),
     );
 
+    // if succeed clear the field and update the comments
     if (response.statusCode == 200) {
       if (!mounted) return;
       commentController.clear();
@@ -159,6 +178,7 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // if error is not null, shows the error
   Widget showAlert() {
     if (error != null) {
       return Container(
@@ -191,10 +211,13 @@ class _postPageState extends State<postPage> {
     return const SizedBox();
   }
 
+  // if the user that connected is not editor return
   Widget editButton() {
     if (!editor) {
       return const SizedBox();
     }
+
+    // if is edit mode shows the next buttons: save, exit and delete.
     if (_isEditMode) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -240,6 +263,8 @@ class _postPageState extends State<postPage> {
               minWidth: 90,
               height: 60,
               onPressed: () async {
+
+                // show are you sure to delete dialog
                 final result = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -257,10 +282,11 @@ class _postPageState extends State<postPage> {
                           ],
                         ));
 
+                // check if the user continue or cancel the delete
                 if (result == null || !result) {
                   return;
                 }
-
+                // del the posts and exit from edit mode
                 delPost();
                 setState(() {
                   _isEditMode = !_isEditMode;
@@ -281,6 +307,8 @@ class _postPageState extends State<postPage> {
         ],
       );
     }
+
+    // Show edit post button
     return MaterialButton(
       minWidth: 90,
       height: 60,
@@ -303,6 +331,7 @@ class _postPageState extends State<postPage> {
     );
   }
 
+  // if the user in edit mode, show the text in text filed for editing else regular text.
   Widget editData(String str, TextStyle style, String label) {
     if (_isEditMode) {
       return TextFormField(
@@ -324,6 +353,7 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Show the comments of the current post
   Widget showComments() {
     if (commentList.isEmpty) {
       return const SizedBox();
@@ -335,7 +365,9 @@ class _postPageState extends State<postPage> {
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: commentList.length,
         separatorBuilder: (context, index) {
-          return const Divider(thickness: 1,);
+          return const Divider(
+            thickness: 1,
+          );
         },
         itemBuilder: (context, index) {
           final Comment comment = commentList[index];
@@ -343,28 +375,27 @@ class _postPageState extends State<postPage> {
             padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
             child: ListTile(
               leading: GestureDetector(
-                // onTap: () async {
-                // },
                 child: Container(
                   height: 50.0,
                   width: 50.0,
                   decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(50))),
+                      color: Colors.blue, borderRadius: BorderRadius.all(Radius.circular(50))),
+
+                  // show user icon
                   child: CircleAvatar(
                       radius: 50,
                       backgroundImage: CommentBox.commentImageParser(
                           imageURLorPath: 'assets/icon-user-default.png')),
                 ),
               ),
+
+              // show the user name and next to him the comment
               title: Text(
                 comment.UserName,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(comment.Content),
-              trailing:
-              Text(comment.TimestampCreated, style: const TextStyle(fontSize: 12)),
+              trailing: Text(comment.TimestampCreated, style: const TextStyle(fontSize: 12)),
             ),
           );
         },
@@ -372,6 +403,7 @@ class _postPageState extends State<postPage> {
     );
   }
 
+  // Return if the user liked this post and update the liked variable
   Future<void> showIfLiked() async {
     final response =
         await get(Uri.parse("${Constants.url}posts/${widget.post.Id}/likes/${Constants.userid}"));
@@ -386,9 +418,8 @@ class _postPageState extends State<postPage> {
     }
   }
 
+  // Send to the server request to add like to the current post and update the value of liked
   Future<bool> onLikeButtonTapped(bool isLiked) async {
-    /// send your request here
-    // final bool success= await sendRequest();
     final response = await http.post(
       Uri.parse('${Constants.url}posts/${widget.post.Id}/likes/'),
       headers: <String, String>{
@@ -402,12 +433,10 @@ class _postPageState extends State<postPage> {
       setState(() {
         showIfLiked();
       });
-      // return liked;
     } else {
       setState(() {
         showIfLiked();
       });
-      // return liked;
     }
     return !isLiked;
   }
@@ -492,27 +521,26 @@ class _postPageState extends State<postPage> {
                   Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                     Row(
                       children: [
+                        // like button
                         LikeButton(
                           isLiked: liked,
                           onTap: onLikeButtonTapped,
                         ),
+                        // write the number of likes
                         FutureBuilder<String>(
                           future: fetchLikes(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text(snapshot.data!.toString());
                             }
-                            // else if (snapshot.hasError) {
-                            // return Text('${snapshot.error}');
-                            // }
                             return const Text("0");
-                            // return const CircularProgressIndicator();
                           },
                         ),
                       ],
                     ),
                     Row(
                       children: [
+                        // show the number of comments
                         const Icon(Icons.comment_rounded),
                         FutureBuilder<String>(
                           future: fetchNumOfComments(),
@@ -520,22 +548,18 @@ class _postPageState extends State<postPage> {
                             if (snapshot.hasData) {
                               return Text(snapshot.data!.toString());
                             }
-                            // else if (snapshot.hasError) {
-                            // return Text('${snapshot.error}');
-                            // }
                             return const Text("0");
-                            // return const CircularProgressIndicator();
                           },
                         ),
                       ],
                     ),
                   ]),
                   const SizedBox(height: 30),
-
+                  // edit button
                   editButton(),
-
                   const SizedBox(height: 20),
 
+                  // Comment box
                   Form(
                     key: formKey,
                     child: Column(
@@ -563,6 +587,8 @@ class _postPageState extends State<postPage> {
                           onChanged: (input) => setState(() => text = input),
                         ),
                         const SizedBox(height: 20),
+
+                        // send comment button
                         SizedBox(
                           width: 110,
                           child: MaterialButton(
@@ -573,7 +599,6 @@ class _postPageState extends State<postPage> {
                                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                                 children: const [
                                   Text(
                                     "Send",
@@ -589,16 +614,14 @@ class _postPageState extends State<postPage> {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 10),
 
+                  // List of comments
                   InputDecorator(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                       ),
-                      child: showComments()
-                  ),
-
+                      child: showComments()),
                   const SizedBox(height: 10),
                 ],
               ),

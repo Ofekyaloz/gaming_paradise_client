@@ -6,6 +6,7 @@ import 'dart:convert';
 
 class NewPost extends StatefulWidget {
   NewPost(this.gameId, {super.key});
+
   String gameId;
 
   @override
@@ -27,27 +28,29 @@ class _NewPostState extends State<NewPost> {
     contentController.dispose();
   }
 
-  Future<void> createpost() async {
+  Future<void> createPost() async {
+    // if the content of the post is valid send to the server post request
     if (_formKey.currentState!.validate()) {
-
       final response = await http.post(
         Uri.parse('${Constants.url}posts/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
+        // post data
         body: jsonEncode(<String, String>{
           'UserId': Constants.userid!,
-          'Title' : titleController.text,
+          'Title': titleController.text,
           'GameId': widget.gameId,
           'Content': contentController.text,
         }),
       );
-
+      // if created return to the last page
       if (response.statusCode == 201) {
         if (!mounted) return;
         Navigator.pop(context);
-
         return;
+
+        // if failed show error
       } else {
         setState(() {
           error = "Failed to create a new post.";
@@ -67,6 +70,8 @@ class _NewPostState extends State<NewPost> {
         backgroundColor: Colors.blue,
         title: const Text('Gaming Paradise!'),
         centerTitle: true,
+
+        // return button
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -107,6 +112,8 @@ class _NewPostState extends State<NewPost> {
                         padding: const EdgeInsets.all(30),
                         child: Column(
                           children: [
+
+                            // title input
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(30),
@@ -116,6 +123,8 @@ class _NewPostState extends State<NewPost> {
                                 border: OutlineInputBorder(),
                                 labelText: 'Title',
                               ),
+
+                              // Validations
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
                                   return 'Title can\'t be empty';
@@ -129,6 +138,8 @@ class _NewPostState extends State<NewPost> {
                               onChanged: (text) => setState(() => _name = text),
                             ),
                             const SizedBox(height: 20),
+
+                            // Content input
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(100),
@@ -140,6 +151,7 @@ class _NewPostState extends State<NewPost> {
                                 border: OutlineInputBorder(),
                                 labelText: 'Content',
                               ),
+                              // Validations
                               validator: (text) {
                                 if (text == null || text == "") {
                                   return 'Content can\'t be empty';
@@ -152,15 +164,16 @@ class _NewPostState extends State<NewPost> {
                               onChanged: (text) => setState(() => _name = text),
                             ),
                             const SizedBox(height: 20),
-
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               child: Container(
                                 padding: const EdgeInsets.only(top: 3, left: 3),
+
+                                // Create Post button
                                 child: MaterialButton(
                                     minWidth: double.infinity,
                                     height: 60,
-                                    onPressed: _name.isNotEmpty ? createpost : null,
+                                    onPressed: _name.isNotEmpty ? createPost : null,
                                     color: Colors.redAccent,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(40)),
@@ -176,14 +189,14 @@ class _NewPostState extends State<NewPost> {
                                         ),
                                         Icon(Icons.post_add)
                                       ],
-                                    )
-                                ),
+                                    )),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
+                    // Back button (exit)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[

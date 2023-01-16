@@ -14,12 +14,15 @@ class mainPage extends StatefulWidget {
 class _mainPageState extends State<mainPage> {
   int _selectedIndex = 0;
 
+  // update the current page
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+
+  // Bottom bar options
   static final List<Widget> _pages = <Widget>[
     PostsOverviewScreen(false, -1),
 
@@ -51,10 +54,14 @@ class _mainPageState extends State<mainPage> {
             )),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
+
+      // show the selected page
       body: SafeArea(child: Center(child: IndexedStack(
         index: _selectedIndex,
         children: _pages,
       ))),
+
+      // bottom navigator bar view
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         selectedFontSize: 20,
@@ -68,14 +75,17 @@ class _mainPageState extends State<mainPage> {
         unselectedItemColor: Colors.deepOrangeAccent,
         currentIndex: _selectedIndex,
 
+        // on tap icon call _onItemTapped function
         onTap: _onItemTapped,
+
+        // icons and labels of bottom bar
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Posts',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_fire_department_rounded),
+            icon: Icon(Icons.games_sharp),
             label: 'Games',
           ),
           BottomNavigationBarItem(

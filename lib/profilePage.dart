@@ -31,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
     fetchGames();
   }
 
+  // Fetch the posts of the connected user
   Future<void> fetchPosts() async {
     final response = await http.get(Uri.parse('${Constants.url}posts/user/${Constants.userid}/'));
     if (response.statusCode == 200) {
@@ -43,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // Fetch the games of the connected user
   Future<void> fetchGames() async {
     final response = await http.get(Uri.parse('${Constants.url}users/${Constants.userid}/games/'));
     if (response.statusCode == 200) {
@@ -55,15 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  // Future<String> fetchLikes() async {
-  //   final response = await http.get(Uri.parse('${Constants.url}posts/${widget.post.Id}/likes/'));
-  //   if (response.statusCode == 200) {
-  //     return response.body;
-  //   } else {
-  //     throw Exception('Failed to load likes');
-  //   }
-  // }
-
+  // List of the games
   Widget showGames() {
     if (games.isEmpty) {
       return const SizedBox();
@@ -86,6 +80,8 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
               child: Center(
                 child: GestureDetector(
+
+                    // On tap a game - goes to gamePage.
                     onTap: () async {
                       Navigator.push(
                           context, MaterialPageRoute(builder: (context) => gamePage(game)));
@@ -100,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // List of posts
   Widget showPosts() {
     if (posts.isEmpty) {
       return const SizedBox();
@@ -122,6 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
             child: Center(
               child: GestureDetector(
+                // On tap a post - goes to postPage.
                 onTap: () async {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => postPage(post)));
                 },
@@ -141,7 +139,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: LayoutBuilder(
-        builder: (context, constraints) => RefreshIndicator(
+      // On pull up, refresh the page
+      builder: (context, constraints) => RefreshIndicator(
           onRefresh: () {
             return Future.delayed(const Duration(seconds: 2), () {
               setState(() {
@@ -154,20 +153,17 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           child: SingleChildScrollView(
               child: Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, MediaQuery.of(context).viewInsets.bottom),
+                  padding:
+                      EdgeInsets.fromLTRB(10, 10, 10, MediaQuery.of(context).viewInsets.bottom),
                   child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight
-                      ),
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
                       child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-
                         Text(
                           Constants.username.toString(),
                           softWrap: true,
                           style: const TextStyle(
                               fontSize: 35, fontWeight: FontWeight.bold, color: Colors.green),
                         ),
-
                         const Text("Favorites Games:",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
                         const SizedBox(height: 10),
@@ -181,7 +177,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                               )),
-
                         const SizedBox(height: 20),
                         const Text("Posts:",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
@@ -197,6 +192,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               )),
                         const SizedBox(height: 30)
                       ]))))),
-        ));
+    ));
   }
 }

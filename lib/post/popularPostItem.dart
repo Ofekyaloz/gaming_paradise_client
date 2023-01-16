@@ -6,6 +6,8 @@ class PopularPostItem extends StatelessWidget {
 
   PopularPostItem(this.title, this.body);
 
+
+  // A popular post item in a list
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -29,11 +29,13 @@ class _GameInfoState extends State<GameInfo> {
     showIfLiked();
   }
 
+  // Fetch all the information about a game.
   Future<void> fetchFullGame() async {
     final response = await http.get(Uri.parse('${Constants.url}games/${widget.game.ID}/'));
     if (response.statusCode == 200) {
       FullGame g = FullGame.fromJson(jsonDecode(response.body));
       setState(() {
+        // update platforms and genres lists
         platforms = g.Platforms;
         genres = g.Genres;
       });
@@ -42,6 +44,7 @@ class _GameInfoState extends State<GameInfo> {
     }
   }
 
+  // Send save to favorites request and update the status of isLiked
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     final response = await http.post(
       Uri.parse('${Constants.url}users/${Constants.userid}/games/'),
@@ -64,9 +67,10 @@ class _GameInfoState extends State<GameInfo> {
     return !isLiked;
   }
 
+  // Update if this game is in favorites
   Future<void> showIfLiked() async {
-    final response = await get(
-        Uri.parse("${Constants.url}users/${Constants.userid}/games/${widget.game.ID}/"));
+    final response =
+        await get(Uri.parse("${Constants.url}users/${Constants.userid}/games/${widget.game.ID}/"));
     if (response.statusCode == 200) {
       setState(() {
         isFavorite = true;
@@ -86,11 +90,13 @@ class _GameInfoState extends State<GameInfo> {
             child: Container(
                 width: double.infinity,
                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  isFavorite ? const Text("This game is in Favorites!") : const Text("Click here to save this game in favorites!"),
+                  isFavorite
+                      ? const Text("This game is in Favorites!")
+                      : const Text("Click here to save this game in favorites!"),
                   LikeButton(
                     isLiked: isFavorite,
-                    circleColor: const CircleColor(
-                        start: Colors.orangeAccent, end: Colors.deepOrangeAccent),
+                    circleColor:
+                        const CircleColor(start: Colors.orangeAccent, end: Colors.deepOrangeAccent),
                     bubblesColor: const BubblesColor(
                       dotPrimaryColor: Colors.orangeAccent,
                       dotSecondaryColor: Colors.deepOrangeAccent,

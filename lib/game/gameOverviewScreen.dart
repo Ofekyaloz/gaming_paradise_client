@@ -34,20 +34,23 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
     fetchData();
   }
 
+  // fetch games from the server
   Future<void> fetchData() async {
     try {
       final response =
           await get(Uri.parse("${Constants.url}games?offset=$_pageNumber"));
 
       List responseList = json.decode(response.body);
-      List<Game> postList =
+      List<Game> gameList =
           responseList.map((data) => Game.fromJson(data)).toList();
 
+
+      // add all the games to ths list and update the page number.
       setState(() {
-        _isLastPage = postList.length < _numberOfGamesPerRequest;
+        _isLastPage = gameList.length < _numberOfGamesPerRequest;
         _loading = false;
         _pageNumber = _pageNumber + 1;
-        _games.addAll(postList);
+        _games.addAll(gameList);
       });
     } catch (e) {
       setState(() {
@@ -58,6 +61,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
     }
   }
 
+  // If failed to fetch games show this error dialog.
   Widget errorDialog({required double size}) {
     return SizedBox(
       height: 180,
@@ -111,6 +115,8 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
         return Center(child: errorDialog(size: 20));
       }
     }
+
+    // Create a list of games
     return ListView.builder(
         itemCount: _games.length + (_isLastPage ? 0 : 1),
         itemBuilder: (context, index) {
@@ -134,6 +140,7 @@ class _GamesOverviewScreenState extends State<GamesOverviewScreen> {
           }
           final Game game = _games[index];
           return GestureDetector(
+            // go to gamePage
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => gamePage(game))),
             child: Padding(
                 padding: const EdgeInsets.all(15.0), child: GameItem(game.Name)),

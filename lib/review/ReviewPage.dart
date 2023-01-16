@@ -11,6 +11,7 @@ class ReviewPage extends StatefulWidget {
   _ReviewPageState createState() => _ReviewPageState();
 }
 
+// Show the review data
 class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                           const SizedBox(height: 20),
 
+                          // Write the username if exists
                           widget.review.UserName != null
                               ? Text(
                                   widget.review.UserName!,

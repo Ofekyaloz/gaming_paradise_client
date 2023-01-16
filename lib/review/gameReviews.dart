@@ -37,10 +37,12 @@ class _gameReviewsState extends State<gameReviews> {
     fetchData();
   }
 
+  // Fetch reviews
   Future<void> fetchData() async {
     Response response = await get(Uri.parse(
         "${Constants.url}games/${widget.gameId}/reviews?offset=$_pageNumber"));
 
+    // if succeed add the reviews to the list and try to fetch the next offset
     if (response.statusCode == 200) {
       List responseList = json.decode(response.body);
       List<Review> postList = responseList.map((data) => Review.fromJson(data)).toList();
@@ -51,6 +53,8 @@ class _gameReviewsState extends State<gameReviews> {
         _pageNumber = _pageNumber + 1;
         _reviews.addAll(postList);
       });
+
+      // if failed or there is no reviews show error and retry button
     } else {
       setState(() {
         _loading = false;
@@ -65,6 +69,8 @@ class _gameReviewsState extends State<gameReviews> {
     }
   }
 
+
+  // error dialog - retry button
   Widget errorDialog({required double size}) {
     return SizedBox(
       height: 180,
@@ -96,14 +102,15 @@ class _gameReviewsState extends State<gameReviews> {
     );
   }
 
+  // show the review list
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: buildPostsView(),
+      body: buildReviewView(),
     );
   }
 
-  Widget buildPostsView() {
+  Widget buildReviewView() {
     if (_reviews.isEmpty) {
       if (_loading) {
         return const Center(
@@ -115,6 +122,7 @@ class _gameReviewsState extends State<gameReviews> {
         return Center(child: errorDialog(size: 20));
       }
     }
+    // Refresh the review list if the user pull up the page
     return RefreshIndicator(
         onRefresh: () {
           return Future.delayed(const Duration(seconds: 2), () {
@@ -123,8 +131,10 @@ class _gameReviewsState extends State<gameReviews> {
               _lastLoadIndex = 0;
               _loading = true;
               _reviews = [];
-              fetchData();
+              _isLastPage = false;
+              _error = false;
             });
+            fetchData();
           });
         },
         child: ListView.builder(
@@ -152,6 +162,7 @@ class _gameReviewsState extends State<gameReviews> {
               }
               final Review review = _reviews[index];
               return GestureDetector(
+                // on pat, goes to review page
                   onTap: () => Navigator.push(
                       context, MaterialPageRoute(builder: (context) => ReviewPage(review))),
                   child: Padding(

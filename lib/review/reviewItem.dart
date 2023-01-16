@@ -6,6 +6,8 @@ class ReviewItem extends StatelessWidget {
 
   ReviewItem(this.username, this.body);
 
+
+  // Show a review in a list
   @override
   Widget build(BuildContext context) {
     return Container(

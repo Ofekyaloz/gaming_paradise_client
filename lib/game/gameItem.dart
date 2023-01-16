@@ -5,6 +5,7 @@ class GameItem extends StatelessWidget {
 
   const GameItem(this.name, {super.key});
 
+  // A card game in a List
   @override
   Widget build(BuildContext context) {
     return Container(

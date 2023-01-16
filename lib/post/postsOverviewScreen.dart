@@ -27,7 +27,6 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
   late List<Post> _posts;
   final int _nextPageTrigger = 3;
   late int _lastLoadIndex;
-  late int _day;
   late int _numOfPopular;
 
   @override
@@ -39,77 +38,57 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
     _loading = true;
     _error = false;
     _lastLoadIndex = 0;
-    _day = 0;
     userPost = !widget.isGamePage;
     _numOfPopular = 100;
   }
 
+  // If this page is game page - fetch this game posts, else fetch popular posts by user and then
+  // fetch recent posts from the server.
   Future<void> fetchData() async {
-    // if (_day >= 14) {
-    //   if (userPost) {
-    //     setState(() {
-    //       _day = 0;
-    //       userPost = !userPost;
-    //       _numOfPopular = _posts.length;
-    //       _loading = true;
-    //     });
-    //     Future.delayed(const Duration(seconds: 2), () {
-    //       fetchData();
-    //     });
-    //   } else {
-    //     setState(() {
-    //       _loading = false;
-    //       _error = false;
-    //     });
-    //     if (_posts.isEmpty) {
-    //       setState(() {
-    //         _error = true;
-    //       });
-    //     }
-    //   }
-    //   return;
-    // }
-
     Response response;
     if (widget.isGamePage) {
-      response = await get(Uri.parse(
-          "${Constants.url}posts/popular/game/${widget.gameId}?offset=$_pageNumber&day=$_day"));
+      response = await get(
+          Uri.parse("${Constants.url}posts/popular/game/${widget.gameId}?offset=$_pageNumber"));
     } else if (userPost) {
-      response = await get(Uri.parse(
-          "${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber&day=$_day"));
+      response = await get(
+          Uri.parse("${Constants.url}posts/popular/user/${Constants.userid}?offset=$_pageNumber"));
     } else {
-      response =
-          await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber&day=$_day"));
+      response = await get(Uri.parse("${Constants.url}posts/popular?offset=$_pageNumber"));
     }
 
+    // if succeed to fetch posts
     if (response.statusCode == 200) {
       List responseList = json.decode(response.body);
+
+      // create tmp post list from the response
       List<Post> postList = responseList.map((data) => Post.fromJson(data)).toList();
 
+      // update the posts list and increase the offset for the next request
       setState(() {
         _isLastPage = postList.length < _numberOfPostsPerRequest;
-        // _loading = false;
         _pageNumber = _pageNumber + 1;
         _lastLoadIndex = _pageNumber;
         _posts.addAll(postList);
       });
 
+      // if its the last page and done with the popular post per user, request the recent posts from
+      // offset 0.
       if (_isLastPage && userPost) {
         setState(() {
           _numOfPopular = _posts.length;
           _loading = true;
           _pageNumber = 0;
           userPost = !userPost;
-
         });
-        Future.delayed(Duration(seconds: 3), () {fetchData();});
-
-
+        Future.delayed(const Duration(seconds: 3), () {
+          fetchData();
+        });
         return;
       }
 
-        return;
-      } else if (response.statusCode == 204) {
+      return;
+      // if response has no content - if its user posts, change to recent posts.
+    } else if (response.statusCode == 204) {
       if (userPost) {
         setState(() {
           _numOfPopular = _posts.length;
@@ -121,10 +100,10 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
           fetchData();
         });
 
-
         return;
       }
       return;
+      // if failed - show error message
     } else {
       setState(() {
         _loading = false;
@@ -134,6 +113,7 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
     }
   }
 
+  // show error message and retry button
   Widget errorDialog({required double size}) {
     return SizedBox(
       height: 180,
@@ -171,12 +151,12 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
       fetchData();
     });
 
-
     return Scaffold(
       body: buildPostsView(),
     );
   }
 
+  // List view of posts
   Widget buildPostsView() {
     if (_posts.isEmpty) {
       if (_loading) {
@@ -189,6 +169,8 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         return Center(child: errorDialog(size: 20));
       }
     }
+
+    // Refresh the posts list if the user pull up the page
     return RefreshIndicator(
         onRefresh: () {
           return Future.delayed(const Duration(seconds: 2), () {
@@ -196,7 +178,6 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
               _posts = [];
               _pageNumber = 0;
               _lastLoadIndex = 0;
-              _day = 0;
               userPost = !widget.isGamePage;
               _loading = true;
               _isLastPage = false;
@@ -209,6 +190,8 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
         child: ListView.builder(
             itemCount: _posts.length + (_isLastPage ? 0 : 1),
             itemBuilder: (context, index) {
+
+              // if is the end of a page, fetch new posts and show loading bar
               if (index == _posts.length - _nextPageTrigger &&
                   !_loading &&
                   index != _lastLoadIndex) {
@@ -231,10 +214,12 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
               }
               final Post post = _posts[index];
               return GestureDetector(
+                  // on tap a post, goes to post page
                   onTap: () => Navigator.push(
                       context, MaterialPageRoute(builder: (context) => postPage(post))),
                   child: Padding(
                       padding: const EdgeInsets.all(15.0),
+                      // show differently popular post or regular post
                       child: index < _numOfPopular
                           ? PopularPostItem(post.Title, post.Content)
                           : PostItem(post.Title, post.Content)));

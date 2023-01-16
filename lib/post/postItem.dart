@@ -6,6 +6,8 @@ class PostItem extends StatelessWidget {
 
   PostItem(this.title, this.body);
 
+
+  // A post item in a list
   @override
   Widget build(BuildContext context) {
     return Container(

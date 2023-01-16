@@ -10,7 +10,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  TextEditingController fullNameController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController confPassController = TextEditingController();
 
@@ -21,7 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void dispose() {
     super.dispose();
-    fullNameController.dispose();
+    userNameController.dispose();
     passController.dispose();
     confPassController.dispose();
   }
@@ -34,7 +34,7 @@ class _SignupPageState extends State<SignupPage> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'UserName': fullNameController.text,
+          'UserName': userNameController.text,
           'Password': passController.text
         }),
       );
@@ -144,7 +144,7 @@ class _SignupPageState extends State<SignupPage> {
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(30),
                                   ],
-                                  controller: fullNameController,
+                                  controller: userNameController,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     icon: Icon(Icons.account_circle_outlined),
@@ -152,18 +152,14 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                   validator: (text) {
                                     if (text == null || text.isEmpty) {
-                                      return 'Full Name can\'t be empty';
+                                      return 'UserName can\'t be empty';
                                     }
                                     if (text.length < 3) {
-                                      return 'Full Name must be 3 characters or longer';
+                                      return 'UserName must be 3 characters or longer!';
                                     }
-                                    // if (widget.users
-                                    //     .where(
-                                    //         (element) => element.UserName == text)
-                                    //     .toList()
-                                    //     .isNotEmpty) {
-                                    //   return 'Username is taken';
-                                    // }
+                                    if (text.length > 20) {
+                                      return 'UserName must be 20 characters or shorter!';
+                                    }
                                     return null;
                                   },
                                   onChanged: (text) =>
@@ -186,7 +182,10 @@ class _SignupPageState extends State<SignupPage> {
                                       return 'Password can\'t be empty';
                                     }
                                     if (text.length < 6) {
-                                      return 'The password must be 8 characters or longer!';
+                                      return 'The password must be 6 characters or longer!';
+                                    }
+                                    if (text.length > 20) {
+                                      return 'The password must be 20 characters or shorter!';
                                     }
                                     if (!RegExp(".*[0-9].*").hasMatch(text)) {
                                       return 'The password must contain at least one numeric character!';
@@ -222,7 +221,10 @@ class _SignupPageState extends State<SignupPage> {
                                       return 'The passwords are different!';
                                     }
                                     if (text.length < 6) {
-                                      return 'The password must be 8 characters or longer!';
+                                      return 'The password must be 6 characters or longer!';
+                                    }
+                                    if (text.length > 20) {
+                                      return 'The password must be 20 characters or shorter!';
                                     }
                                     if (!RegExp(".*[0-9].*").hasMatch(text)) {
                                       return 'The password must contain at least one numeric character!';
@@ -267,6 +269,8 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
+
+                        // Login button
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[

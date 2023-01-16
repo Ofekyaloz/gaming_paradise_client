@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'search.dart';
 import 'mainPage.dart';
 import 'signupPage.dart';
-import 'entities/Post.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
 
@@ -35,12 +33,18 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
+
+  // Send a login request to the server
   void login() async {
+
+    // check if the username and the password are valid
     if (!_formKey.currentState!.validate()) {
       setState(() {
         error = "Incorrect Email or Password";
       });
     }
+
+    // send a login request
     final response = await http.post(
       Uri.parse('${Constants.url}login/'),
       headers: <String, String>{
@@ -52,6 +56,7 @@ class _MyAppState extends State<MyApp> {
       }),
     );
 
+    // if succeed update the username and id and clear the fields and go to the main page
     if (response.statusCode == 200) {
       if (!mounted) return;
 
@@ -66,11 +71,11 @@ class _MyAppState extends State<MyApp> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            // builder: (context) => SignupPage(users)),
-            // builder: (context) => postPage(post, true)),
             builder: (context) => mainPage()),
       );
       return;
+
+      // if failed show an error
     } else {
       setState(() {
         error = "Incorrect Email or Password";
@@ -79,6 +84,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  // if error is not none, write the error
   Widget showAlert() {
     if (error != null) {
       return Container(
@@ -139,21 +145,9 @@ class _MyAppState extends State<MyApp> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // FutureBuilder<Game>(
-                          //   future: futureGame,
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.hasData) {
-                          //       return Text(snapshot.data!.Name);
-                          //     } else if (snapshot.hasError) {
-                          //       return Text('${snapshot.error}');
-                          //     }
-                          //
-                          //     // By default, show a loading spinner.
-                          //     return const CircularProgressIndicator();
-                          //   },
-                          // ),
                           Container(
                             padding: const EdgeInsets.all(10),
+                            // username field
                             child: TextFormField(
                               controller: usernameController,
                               inputFormatters: [
@@ -164,21 +158,26 @@ class _MyAppState extends State<MyApp> {
                                 icon: Icon(Icons.account_circle_outlined),
                                 labelText: 'UserName',
                               ),
-                              // keyboardType: TextInputType.emailAddress,
-                              // validator: (text) {
-                              //   if (text == null || text.isEmpty) {
-                              //     return 'Email address can\'t be empty';
-                              //   }
-                              //   if (text.length < 8) {
-                              //     return 'Email address must be 8 characters or longer!';
-                              //   }
-                              //   if (!RegExp(
-                              //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              //       .hasMatch(text)) {
-                              //     return 'Invalid email address!';
-                              //   }
-                              //   return null;
-                              // },
+
+                              // UserName validations
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (text) {
+                                if (text == null || text.isEmpty) {
+                                  return 'UserName can\'t be empty';
+                                }
+                                if (text.length < 3) {
+                                  return 'UserName address must be 3 characters or longer!';
+                                }
+                                if (text.length > 20) {
+                                  return 'UserName must be 20 characters or shorter!';
+                                }
+                                if (!RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                    .hasMatch(text)) {
+                                  return 'Invalid UserName!';
+                                }
+                                return null;
+                              },
                               onChanged: (text) => setState(() => _name = text),
                             ),
                           ),
@@ -195,24 +194,28 @@ class _MyAppState extends State<MyApp> {
                                 icon: Icon(Icons.password),
                                 labelText: 'Password',
                               ),
-                              // validator: (text) {
-                              //   if (text == null || text == "") {
-                              //     return 'Password can\'t be empty';
-                              //   }
-                              //   if (text.length < 6) {
-                              //     return 'The password must be 8 characters or longer!';
-                              //   }
-                              //   if (!RegExp(".*[0-9].*").hasMatch(text)) {
-                              //     return 'The password must contain at least one numeric character!';
-                              //   }
-                              //   if (!RegExp(".*[a-z].*").hasMatch(text)) {
-                              //     return 'The password must contain at least one lowercase character!';
-                              //   }
-                              //   if (!RegExp(".*[A-Z].*").hasMatch(text)) {
-                              //     return 'The password must contain at least one uppercase character!';
-                              //   }
-                              //   return null;
-                              // },
+                              // Password validations
+                              validator: (text) {
+                                if (text == null || text == "") {
+                                  return 'Password can\'t be empty';
+                                }
+                                if (text.length < 6) {
+                                  return 'The password must be 8 characters or longer!';
+                                }
+                                if (text.length > 20) {
+                                  return 'The password must be 20 characters or shorter!';
+                                }
+                                if (!RegExp(".*[0-9].*").hasMatch(text)) {
+                                  return 'The password must contain at least one numeric character!';
+                                }
+                                if (!RegExp(".*[a-z].*").hasMatch(text)) {
+                                  return 'The password must contain at least one lowercase character!';
+                                }
+                                if (!RegExp(".*[A-Z].*").hasMatch(text)) {
+                                  return 'The password must contain at least one uppercase character!';
+                                }
+                                return null;
+                              },
                               onChanged: (text) => setState(() => _pass = text),
                             ),
                           ),
@@ -242,24 +245,6 @@ class _MyAppState extends State<MyApp> {
                               )),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Search()),
-                            );
-                          },
-                          child: const Text('Forgot Password'),
-                          // const Text('new post'),
-                        ),
-                      ],
                     ),
                     const SizedBox(
                       height: 10,
