@@ -6,7 +6,6 @@ import 'signupPage.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
 
-
 void main() => runApp(const MaterialApp(home: MyApp()));
 
 class MyApp extends StatefulWidget {
