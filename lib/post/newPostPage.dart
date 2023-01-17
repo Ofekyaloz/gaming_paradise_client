@@ -130,7 +130,10 @@ class _NewPostState extends State<NewPost> {
                                   return 'Title can\'t be empty';
                                 }
                                 if (text.length < 3) {
-                                  return 'Title must be 3 characters or longer';
+                                  return 'Title must be 3 characters or longer!';
+                                }
+                                if (text.length > 50) {
+                                  return 'Title must be 50 characters or shorter!';
                                 }
 
                                 return null;
