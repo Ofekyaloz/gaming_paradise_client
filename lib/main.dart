@@ -38,9 +38,7 @@ class _MyAppState extends State<MyApp> {
 
     // check if the username and the password are valid
     if (!_formKey.currentState!.validate()) {
-      setState(() {
-        error = "Incorrect Email or Password";
-      });
+      return;
     }
 
     // send a login request
@@ -171,7 +169,7 @@ class _MyAppState extends State<MyApp> {
                                   return 'UserName must be 20 characters or shorter!';
                                 }
                                 if (!RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        r"^[a-zA-Z0-9_]+$")
                                     .hasMatch(text)) {
                                   return 'Invalid UserName!';
                                 }
