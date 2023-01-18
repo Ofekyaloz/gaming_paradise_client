@@ -24,7 +24,6 @@ class _MyAppState extends State<MyApp> {
   String _name = '', _pass = '';
   String? error;
 
-
   @override
   void dispose() {
     usernameController.dispose();
@@ -32,10 +31,8 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-
   // Send a login request to the server
   void login() async {
-
     // check if the username and the password are valid
     if (!_formKey.currentState!.validate()) {
       return;
@@ -67,8 +64,7 @@ class _MyAppState extends State<MyApp> {
       passwordController.clear();
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => mainPage()),
+        MaterialPageRoute(builder: (context) => mainPage()),
       );
       return;
 
@@ -95,8 +91,7 @@ class _MyAppState extends State<MyApp> {
               child: Icon(Icons.error_outline),
             ),
             Expanded(
-                child: Text(error.toString(),
-                    style: const TextStyle(fontWeight: FontWeight.bold))),
+                child: Text(error.toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: IconButton(
@@ -133,8 +128,7 @@ class _MyAppState extends State<MyApp> {
                         padding: const EdgeInsets.all(10),
                         child: const Text(
                           'Login',
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                         )),
                     Form(
                       key: _formKey,
@@ -168,10 +162,8 @@ class _MyAppState extends State<MyApp> {
                                 if (text.length > 20) {
                                   return 'UserName must be 20 characters or shorter!';
                                 }
-                                if (!RegExp(
-                                        r"^[a-zA-Z0-9_]+$")
-                                    .hasMatch(text)) {
-                                  return 'Invalid UserName!';
+                                if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(text)) {
+                                  return 'UserName contains only letters&numbers!';
                                 }
                                 return null;
                               },
@@ -211,6 +203,9 @@ class _MyAppState extends State<MyApp> {
                                 if (!RegExp(".*[A-Z].*").hasMatch(text)) {
                                   return 'The password must contain at least one uppercase character!';
                                 }
+                                if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(text)) {
+                                  return 'Password contains only letters&numbers!';
+                                }
                                 return null;
                               },
                               onChanged: (text) => setState(() => _pass = text),
@@ -226,11 +221,9 @@ class _MyAppState extends State<MyApp> {
                                 minWidth: double.infinity,
                                 height: 60,
                                 color: Colors.blueAccent,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40)),
-                                onPressed: _name.isNotEmpty && _pass.isNotEmpty
-                                    ? login
-                                    : null,
+                                shape:
+                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                                onPressed: _name.isNotEmpty && _pass.isNotEmpty ? login : null,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: const [
@@ -265,8 +258,7 @@ class _MyAppState extends State<MyApp> {
 
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupPage()),
+                              MaterialPageRoute(builder: (context) => SignupPage()),
                               //   builder: (context) =>
                               //       mainPage()),
                               //       postPage(post)), // get post id

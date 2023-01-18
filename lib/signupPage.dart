@@ -160,6 +160,9 @@ class _SignupPageState extends State<SignupPage> {
                                     if (text.length > 20) {
                                       return 'UserName must be 20 characters or shorter!';
                                     }
+                                    if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(text)) {
+                                      return 'UserName contains only letters&numbers!';
+                                    }
                                     return null;
                                   },
                                   onChanged: (text) =>
@@ -195,6 +198,9 @@ class _SignupPageState extends State<SignupPage> {
                                     }
                                     if (!RegExp(".*[A-Z].*").hasMatch(text)) {
                                       return 'The password must contain at least one uppercase character!';
+                                    }
+                                    if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(text)) {
+                                      return 'Password contains only letters&numbers!';
                                     }
                                     return null;
                                   },
@@ -234,6 +240,9 @@ class _SignupPageState extends State<SignupPage> {
                                     }
                                     if (!RegExp(".*[A-Z].*").hasMatch(text)) {
                                       return 'The password must contain at least one uppercase character!';
+                                    }
+                                    if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(text)) {
+                                      return 'Password contains only letters&numbers!';
                                     }
                                     return null;
                                   },
